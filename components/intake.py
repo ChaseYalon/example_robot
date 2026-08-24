@@ -1,10 +1,10 @@
 from phoenix6 import hardware, configs, signals, controls
-from example_robot.lemonlib import control
-from example_robot.lemonlib import smart#, util
+from lemonlib import control
+from lemonlib import smart#, util
 from wpimath import units
 import enum
 
-import example_robot.constants as constants
+import constants
 
 
 class Intake:
