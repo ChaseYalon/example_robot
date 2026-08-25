@@ -1,7 +1,7 @@
 import constants
 from phoenix6 import swerve, hardware
 from phoenix6.swerve import requests
-from wpimath import kinematics, geometry, units
+from wpimath import geometry, units
 
 class SwerveDrive:
     drivetrain: swerve.SwerveDrivetrain
@@ -37,24 +37,9 @@ class SwerveDrive:
             .with_drive_request_type(swerve.SwerveModule.DriveRequestType.VELOCITY)
             .with_steer_request_type(swerve.SwerveModule.SteerRequestType.POSITION)
         )
-        facing_angle_req = (
-            requests.FieldCentricFacingAngle()
-            .with_deadband(0.0)
-            .with_rotational_deadband(0.0)
-            .with_drive_request_type(swerve.SwerveModule.DriveRequestType.VELOCITY)
-            .with_steer_request_type(swerve.SwerveModule.SteerRequestType.POSITION)
-            .with_heading_pid(3.0, 0.0, 0.0)
-        )
-        facing_angle_field_req = (
-            requests.FieldCentricFacingAngle()
-            .with_deadband(0.0)
-            .with_rotational_deadband(0.0)
-            .with_forward_perspective(requests.ForwardPerspectiveValue.BLUE_ALLIANCE)
-            .with_drive_request_type(swerve.SwerveModule.DriveRequestType.VELOCITY)
-            .with_steer_request_type(swerve.SwerveModule.SteerRequestType.POSITION)
-            .with_heading_pid(3.0, 0.0, 0.0)
-        )
         self.drivetrain.seed_field_centric()
+
+        self.pending_request = self.robot_centric_req.with_velocity_x(0.0).with_velocity_y(0.0).with_rotational_rate(0.0)
         
     def drive(self, transX: units.meters_per_second, transY: units.meters_per_second, rotX: units.radians, field_relative: bool):
         if field_relative:
@@ -71,6 +56,10 @@ class SwerveDrive:
                     .with_velocity_y(transY)
                     .with_rotational_rate(rotX)
             )
-    
+    def get_pose(self) -> geometry.Pose2d:
+        return self.drivetrain.get_state().pose
+    """pose, seconds_since_unix_epoch, (x, y, theta)"""
+    def add_pose_info(self, pose_info: geometry.Pose2d, time: units.seconds, stddevs: tuple[float, float, float]):
+        self.drivetrain.add_vision_measurement(pose_info, time, stddevs)
     def execute(self):
         self.drivetrain.set_control(self.pending_request)

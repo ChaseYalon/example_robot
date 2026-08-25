@@ -128,7 +128,6 @@ def calc_optimal_volts(horizontalDistance: float) -> float:
 
 
 # </Algorithms_etc>
-HORIZONTAL_DISTANCE_TEMP = 1.0
 from indexer import Indexer
 from shooter import Shooter
 from wpimath import units
@@ -141,14 +140,14 @@ class Controller:
     VOLTAGE_TO_VELOCITY = 1.0  # temp number
     MAX_VOLTS = units.volts(12.0)
     should_shoot = False
-
+    distance_from_target: units.meters
     def __init__(self):
         self.indexer = Indexer()
         self.shooter = Shooter()
 
-    def shoot(self):
+    def shoot(self, distance_from_target: units.meters):
         self.should_shoot = True
-
+        self.distance_from_target = distance_from_target
     def stop_shoot(self):
         self.should_shoot = False
 
@@ -160,10 +159,9 @@ class Controller:
             self.indexer.conveyor_off()
             self.indexer.kicker_off()
         else:
-            raise RuntimeError  # needs odometry first
-            self.shooter.set_velocity(calc_optimal_volts(HORIZONTAL_DISTANCE_TEMP))
-            self.indexer.kick_on()
-            self.indexer.conv_on()
+            self.shooter.set_velocity(calc_optimal_volts(self.distance_from_target))
+            self.indexer.kicker_on()
+            self.indexer.conveyor_on()
 
         self.indexer.execute()
         self.shooter.execute()

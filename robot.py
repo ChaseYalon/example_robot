@@ -3,21 +3,26 @@ from components.intake import Intake
 from lemonlib import control
 from components.dispenser import Controller
 from components.swerve import SwerveDrive
+from components.odometry import Odometry
 from wpimath import units
 import math
 class MyRobot(wpilib.TimedRobot):
     intake: Intake
     shot_controller: Controller
     swerve: SwerveDrive
+    odometry: Odometry
     primary: control.LemonInput
     secondary: control.LemonInput
     MAX_METERS_PER_SECOND = units.meters_per_second(3)
+    MAX_ROTATIONS_PER_SECOND = units.radians_per_second(math.pi)
     def robotInit(self):
         self.intake = Intake()
         self.shot_controller = Controller()
         self.swerve = SwerveDrive()
+        self.odometry = Odometry(self.swerve)
         
     def teleopPeriodic(self):
+        self.odometry.execute() #prevent datalag
 
         # <Intake>
         # rollers
@@ -34,7 +39,7 @@ class MyRobot(wpilib.TimedRobot):
 
         # <Shooter>
         if self.secondary.getRightTriggerAxis() >= 0.8:
-            self.shot_controller.shoot()
+            self.shot_controller.shoot(self.odometry.get_target_distance())
         else:
             self.shot_controller.stop_shoot()
         # </Shooter>
@@ -43,7 +48,7 @@ class MyRobot(wpilib.TimedRobot):
         self.swerve.drive(
             self.primary.getLeftX() * self.MAX_METERS_PER_SECOND,
             self.primary.getLeftY() * self.MAX_METERS_PER_SECOND,
-            math.atan2(self.primary.getRightX(), self.primary.getRightY()),
+            self.primary.getRightX() * self.MAX_ROTATIONS_PER_SECOND,
             self.primary.getLeftStickButton() #idk if this is a good button
         )
         #</Swerve>
