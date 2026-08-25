@@ -61,5 +61,8 @@ class SwerveDrive:
     """pose, seconds_since_unix_epoch, (x, y, theta)"""
     def add_pose_info(self, pose_info: geometry.Pose2d, time: units.seconds, stddevs: tuple[float, float, float]):
         self.drivetrain.add_vision_measurement(pose_info, time, stddevs)
+    def get_distance_from_pose(self, pose: geometry.Pose2d) -> units.meters:
+        return pose.translation().distance(self.get_pose().translation())
+
     def execute(self):
         self.drivetrain.set_control(self.pending_request)
