@@ -2,12 +2,15 @@ from phoenix6 import hardware, configs, signals, controls
 from lemonlib import smart
 from wpimath import units
 import constants
+
+
 class Shooter:
     left_motor = hardware.TalonFX(2)
     right_motor = hardware.TalonFX(3)
     shooter_profile: smart.SmartProfile
     base_config: configs.TalonFXConfiguration
-    velocity: float #should be a better unit
+    velocity: float  # should be a better unit
+
     def __init__(self):
         slot0 = self.shooter_profile.create_ctre_flywheel_controller()
         slot1 = (
@@ -43,12 +46,16 @@ class Shooter:
         self.right_motor.configurator.apply(config)
         self.left_motor.configurator.apply(config)
 
-        #right follows the left
-        self.shooter_follower = controls.Follower(self.left_motor.device_id, signals.MotorAlignmentValue.OPPOSED)
+        # right follows the left
+        self.shooter_follower = controls.Follower(
+            self.left_motor.device_id, signals.MotorAlignmentValue.OPPOSED
+        )
         self.right_motor.set_control(self.shooter_follower)
         self.base_config = config
+
     def set_velocity(self, velocity: float):
         self.velocity = velocity
+
     def on_enable(self):
         if constants.TUNING_ENABLED:
             self.slot0 = self.shooter_profile.create_ctre_flywheel_controller()
@@ -65,4 +72,6 @@ class Shooter:
             self.left_motor.configurator.apply(self.base_config)
 
     def execute(self):
-        self.left_motor.set_control(controls.VelocityVoltage(self.velocity).with_slot(0))
+        self.left_motor.set_control(
+            controls.VelocityVoltage(self.velocity).with_slot(0)
+        )

@@ -2,39 +2,57 @@ import wpilib
 from components.intake import Intake
 from lemonlib import control
 from components.dispenser import Controller
+from components.swerve import SwerveDrive
+from wpimath import units
+import math
 class MyRobot(wpilib.TimedRobot):
     intake: Intake
     shot_controller: Controller
+    swerve: SwerveDrive
     primary: control.LemonInput
     secondary: control.LemonInput
+    MAX_METERS_PER_SECOND = units.meters_per_second(3)
     def robotInit(self):
         self.intake = Intake()
         self.shot_controller = Controller()
+        self.swerve = SwerveDrive()
+        
     def teleopPeriodic(self):
 
-        #<Intake>
-        #rollers
+        # <Intake>
+        # rollers
         if self.secondary.getLeftTriggerAxis() >= 0.8:
             self.intake.set_voltage(-10.0)
         elif self.secondary.getLeftBumper():
             self.intake.set_voltage(10.0)
-        #hinge
+        # hinge
         if self.secondary.getXButton():
             self.intake.set_arm_voltage(12)
         elif self.secondary.getBButton():
             self.intake.set_arm_voltage(-6)
-        #</Intake>
+        # </Intake>
 
-        #<Shooter>
+        # <Shooter>
         if self.secondary.getRightTriggerAxis() >= 0.8:
             self.shot_controller.shoot()
         else:
             self.shot_controller.stop_shoot()
-        #</Shooter>
-        #<Execute>
+        # </Shooter>
+        
+        # <Swerve>
+        self.swerve.drive(
+            self.primary.getLeftX() * self.MAX_METERS_PER_SECOND,
+            self.primary.getLeftY() * self.MAX_METERS_PER_SECOND,
+            math.atan2(self.primary.getRightX(), self.primary.getRightY()),
+            self.primary.getLeftStickButton() #idk if this is a good button
+        )
+        #</Swerve>
+        
+        # <Execute>
         self.intake.execute()
         self.shot_controller.execute()
-        #</Execute>
+        self.swerve.execute()
+        # </Execute>
 
     def teleopInit(self):
         self.primary = control.LemonInput(0)
