@@ -41,7 +41,7 @@ class SwerveDrive:
 
         self.pending_request = self.robot_centric_req.with_velocity_x(0.0).with_velocity_y(0.0).with_rotational_rate(0.0)
         
-    def drive(self, transX: units.meters_per_second, transY: units.meters_per_second, rotX: units.radians, field_relative: bool):
+    def drive(self, transX: units.meters_per_second, transY: units.meters_per_second, rotX: units.radians_per_second, field_relative: bool):
         if field_relative:
             self.pending_request = (
                 self.field_centric_req

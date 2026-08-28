@@ -28,6 +28,7 @@ EXIT_VELOCITY = 10.0  # m/s
 MAX_ALLOWABLE_ITERATIONS = 1000  # max allowable iterations to prevent infinite loops
 SHOOTER_ANGLE = 23.0  # degrees, mechanically fixed - shooter can no longer pitch
 
+VOLTAGE_TO_VELOCITY = 1.0  # temp number
 
 def horizontal_distance_over_time(
     initialVelocity: float, angle: float, time: float
@@ -61,7 +62,7 @@ def vertical_position_at_horizontal_distance(
 
 
 def volts_to_velocity(volts: float) -> float:
-    return volts * 10
+    return volts * VOLTAGE_TO_VELOCITY
 
 
 def hits_backboard(velocity: float, horizontalDistance: float) -> bool:
@@ -137,7 +138,6 @@ class Controller:
     indexer: Indexer
     shooter: Shooter
     """How many volts it takes the shooter to spin 1 rpm faster, NEEDS TUNING"""
-    VOLTAGE_TO_VELOCITY = 1.0  # temp number
     MAX_VOLTS = units.volts(12.0)
     should_shoot = False
     distance_from_target: units.meters
@@ -154,7 +154,7 @@ class Controller:
     def execute(self):
         if not self.should_shoot:
             self.shooter.set_velocity(
-                0.8 * self.MAX_VOLTS * self.VOLTAGE_TO_VELOCITY
+                volts_to_velocity(0.8 * self.MAX_VOLTS)
             )  # 0.8 is a made up number, tune
             self.indexer.conveyor_off()
             self.indexer.kicker_off()

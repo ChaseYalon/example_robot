@@ -4,7 +4,7 @@ from lemonlib import control
 from components.dispenser import Controller
 from components.swerve import SwerveDrive
 from components.odometry import Odometry
-from components.auto import AutoRunner, AutoContext, driveForwardIntakeMoveBackShoot
+from components.auto import AutoContext, AutoRunner
 from wpimath import units
 import math
 class MyRobot(wpilib.TimedRobot):
@@ -55,6 +55,7 @@ class MyRobot(wpilib.TimedRobot):
         #</Swerve>
         
         # <Execute>
+        #odometry moved to top
         self.intake.execute()
         self.shot_controller.execute()
         self.swerve.execute()
@@ -65,6 +66,7 @@ class MyRobot(wpilib.TimedRobot):
         self.secondary = control.LemonInput(1)
     def autonomousInit(self):
         self.ctx = AutoContext(self.swerve, self.intake, self.shot_controller, self.odometry)
-        self.routine1 = driveForwardIntakeMoveBackShoot
+        self.routine1 = AutoRunner("./choreo/BlueLeftIntakeShoot.traj")
     def autonomousPeriodic(self):
-        self.routine1.run(self.ctx)
+        self.routine1.execute(self.ctx)
+        self.ctx.execute()

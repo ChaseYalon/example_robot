@@ -1,9 +1,11 @@
 {
     "cSpell.words": [
         "apriltag",
+        "choreo",
         "deadband",
         "INTAKING",
         "photonlibpy",
-        "robotpy"
+        "robotpy",
+        "traj"
     ]
 }
