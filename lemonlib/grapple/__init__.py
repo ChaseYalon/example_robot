@@ -1,18 +1,18 @@
-from example_robot.lemonlib.grapple.libgrapplefrc import (
+from lemonlib.grapple.libgrapplefrc import (
     LaserCAN as _LaserCAN,
 )
-from example_robot.lemonlib.grapple.libgrapplefrc import (
+from lemonlib.grapple.libgrapplefrc import (
     LaserCanMeasurement as _LaserCanMeasurement,
 )
-from example_robot.lemonlib.grapple.libgrapplefrc import (
+from lemonlib.grapple.libgrapplefrc import (
     LaserCanRangingMode,
     LaserCanTimingBudget,
     can_bridge_tcp,
 )
-from example_robot.lemonlib.grapple.libgrapplefrc import (
+from lemonlib.grapple.libgrapplefrc import (
     LaserCanRoi as _LaserCanRoi,
 )
-from example_robot.lemonlib.grapple.libgrapplefrc import (
+from lemonlib.grapple.libgrapplefrc import (
     MitoCANdria as _MitoCANdria,
 )
 

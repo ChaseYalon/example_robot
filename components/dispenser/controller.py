@@ -16,8 +16,10 @@ import math
 import time
 
 # CONSTANTS - These are made up numbers
-BALL_WEIGHT = 15  # grams
-BALL_DIAMETER = 0.1524  # meters = 6 inches
+# unused until the model accounts for air drag (a gravity-only projectile is
+# independent of mass, and diameter only matters through drag/Magnus):
+# BALL_WEIGHT = 15  # grams
+# BALL_DIAMETER = 0.1524  # meters = 6 inches
 HOOP_RADIUS = 1.0922  # meters = 42 inches
 HOOP_HEIGHT = 1.8288  # meters = 72 inches
 ACCURACY_TOLERANCE = 0.0762  # meters = 3 inches
@@ -26,7 +28,7 @@ BALL_EXIT_HEIGHT = 0.254  # meters = 10 inches
 GRAVITY = 9.81  # m/s^2
 EXIT_VELOCITY = 10.0  # m/s
 MAX_ALLOWABLE_ITERATIONS = 1000  # max allowable iterations to prevent infinite loops
-SHOOTER_ANGLE = 23.0  # degrees, mechanically fixed - shooter can no longer pitch
+SHOOTER_ANGLE = 90 - 23.0  # degrees, I assume it is 90-what it said in 2026
 
 VOLTAGE_TO_VELOCITY = 1.0  # temp number
 
@@ -129,8 +131,8 @@ def calc_optimal_volts(horizontalDistance: float) -> float:
 
 
 # </Algorithms_etc>
-from indexer import Indexer
-from shooter import Shooter
+from .indexer import Indexer
+from .shooter import Shooter
 from wpimath import units
 
 

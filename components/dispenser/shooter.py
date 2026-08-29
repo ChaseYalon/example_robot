@@ -12,6 +12,18 @@ class Shooter:
     velocity: float  # should be a better unit
 
     def __init__(self):
+        self.shooter_profile = smart.SmartProfile(
+            "shooter",
+            {
+                "kP": 0.35,
+                "kI": 0.0,
+                "kD": 0.0,
+                "kS": 0.0,
+                "kV": 0.11137,
+                "kA": 0.0,  # 0.29663,
+            },
+            constants.TUNING_ENABLED
+        )
         slot0 = self.shooter_profile.create_ctre_flywheel_controller()
         slot1 = (
             configs.Slot1Configs()

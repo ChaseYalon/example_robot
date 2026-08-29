@@ -3,7 +3,7 @@ from typing import Callable, Dict, List
 import magicbot
 from wpilib import DriverStation, Timer
 
-from example_robot.lemonlib.smart import SmartNT, SmartPreference
+from lemonlib.smart import SmartNT, SmartPreference
 
 
 class LemonRobot(magicbot.MagicRobot):

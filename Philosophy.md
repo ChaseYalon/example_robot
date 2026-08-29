@@ -13,7 +13,8 @@ Code is "correct" if...
 A note on point 5: during competition season, it is often the case that multiple components are being developed at the same time, in that case it would be frustrating for the author of component A to expect component B to have a certain method, only to find out it has not.
 
 ### "All Control Paths" are tested if...
-Note: This  entire requirement may be waived by majority vote of the software team, within 3 weeks of any competition
+Note: This entire requirement may be waived by majority vote of the software team, within 3 weeks of any competition.
+Note: If there is a given execution path where it is impossible independently execute (say a deeply nested if statement), than consider that test unnecessary.
 1. Every possible execution path (so every if, else, and elif branch) has at least 1 unit test ensuring it performs its intended function AND
 2. For every pair of interacting control paths (meaning the outcome of one changes the behavior of the other; for example, one sets a variable that the other reads, or both write to the same motor), there is at least 1 test exercising that pair together AND
 3. Every loop is tested three times (if the loop does not iterate at all, iterates once, and iterates $N$ times where $N \in \mathbb{N}_{>1}$ times) AND
