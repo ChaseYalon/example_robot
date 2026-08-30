@@ -5,7 +5,7 @@ from components.intake import Intake
 from components.odometry import Odometry
 import json
 import time
-import math
+from lemonlib.util import AlertManager, AlertType
 class AutoContext:
     sd: SwerveDrive
     it: Intake
@@ -41,7 +41,11 @@ class AutoRunner():
         vx = 0
         vy = 0
         omega = 0
-        samples = self.contents["trajectory"]["samples"]
+        try:
+            samples = self.contents["trajectory"]["samples"]
+        except:
+            AlertManager.instant_alert("Malformed Trajectory file, auto stopping", AlertType.WARNING)
+            return
         for i, row in enumerate(samples): #if perf becomes an issue, binary search here would be an easy optimization
             if dt - row["t"] < 0:
                 distFromLastPos = abs(dt - samples[i - 1]["t"])
