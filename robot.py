@@ -5,7 +5,10 @@ from components.dispenser import Controller
 from components.swerve import SwerveDrive
 from components.odometry import Odometry
 from components.auto import AutoContext, AutoRunner
-from wpimath import units
+from smartunits import (
+    meters_per_second, radians_per_second,
+    linear_velocity, angular_velocity,
+)
 import math
 class MyRobot(wpilib.TimedRobot):
     intake: Intake
@@ -14,8 +17,8 @@ class MyRobot(wpilib.TimedRobot):
     odometry: Odometry
     primary: control.LemonInput
     secondary: control.LemonInput
-    MAX_METERS_PER_SECOND = units.meters_per_second(3)
-    MAX_ROTATIONS_PER_SECOND = units.radians_per_second(math.pi)
+    MAX_LINEAR_VELOCITY : linear_velocity = meters_per_second.of(3)
+    MAX_ANGULAR_VELOCITY : angular_velocity = radians_per_second.of(math.pi)
     def robotInit(self):
         self.intake = Intake()
         self.shot_controller = Controller()
@@ -47,9 +50,9 @@ class MyRobot(wpilib.TimedRobot):
         
         # <Swerve>
         self.swerve.drive(
-            self.primary.getLeftX() * self.MAX_METERS_PER_SECOND,
-            self.primary.getLeftY() * self.MAX_METERS_PER_SECOND,
-            self.primary.getRightX() * self.MAX_ROTATIONS_PER_SECOND,
+            self.primary.getLeftX() * self.MAX_LINEAR_VELOCITY.in_units(meters_per_second),
+            self.primary.getLeftY() * self.MAX_LINEAR_VELOCITY.in_units(meters_per_second),
+            self.primary.getRightX() * self.MAX_ANGULAR_VELOCITY.in_units(radians_per_second),
             self.primary.getLeftStickButton() #idk if this is a good button
         )
         #</Swerve>
