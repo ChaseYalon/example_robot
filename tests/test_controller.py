@@ -2,6 +2,8 @@ import pytest
 from components.dispenser import Controller
 from components.dispenser import controller as ctrl
 from components.dispenser.controller import calc_optimal_volts, MAX_ALLOWABLE_ITERATIONS
+from smartunits.distance import meters
+from smartunits.voltage import volts
 
 def test_shot_controller_controller():
 
@@ -11,12 +13,12 @@ def test_shot_controller_controller():
     c.execute()
     assert c.indexer.conv_on == False
     assert c.indexer.kick_on == False
-    assert c.shooter.velocity == 0.8 * c.MAX_VOLTS
+    assert c.shooter.velocity == ctrl.volts_to_velocity(0.8 * c.MAX_VOLTS.in_unit(volts))
 
     #controler execute case 2
     c = Controller()
-    c.shoot(3)
-    c.distance_from_target = 3
+    c.shoot(meters.of(3))
+    c.distance_from_target = meters.of(3)
     c.execute()
     assert c.indexer.conv_on == True
     assert c.indexer.kick_on == True

@@ -1,9 +1,12 @@
 from lemonlib import vision
-from wpimath import geometry, units
+from wpimath import geometry
 from photonlibpy.photonPoseEstimator import PhotonPoseEstimator
 from components.swerve import SwerveDrive
 import robotpy_apriltag
 import wpilib
+from smartunits.angle import radians, degrees
+from smartunits import Distance
+from smartunits.distance import meters
 
 RED_HUB_TAGS = (4, 10)
 BLUE_HUB_TAGS = (20, 26)
@@ -27,31 +30,31 @@ class Odometry:
             -0.279,
             0.222,
             0.229,
-            geometry.Rotation3d(0.0, units.degreesToRadians(-30), units.degreesToRadians(45)),
+            geometry.Rotation3d(0.0, degrees.of(-30).in_unit(radians), degrees.of(45).in_unit(radians)),
         )
         rtc_front_right = geometry.Transform3d(
             -0.279,
             -0.222,
             0.229,
-            geometry.Rotation3d(0.0, units.degreesToRadians(-30), units.degreesToRadians(-45)),
+            geometry.Rotation3d(0.0, degrees.of(-30).in_unit(radians), degrees.of(-45).in_unit(radians)),
         )
         rtc_back_left = geometry.Transform3d(
             -ox,
             oy,
             0.21,
-            geometry.Rotation3d(0.0, units.degreesToRadians(-10), units.degreesToRadians(135)),
+            geometry.Rotation3d(0.0, degrees.of(-10).in_unit(radians), degrees.of(135).in_unit(radians)),
         )
         rtc_back_right = geometry.Transform3d(
             -ox,
             -oy,
             0.21,
-            geometry.Rotation3d(0.0, units.degreesToRadians(-10), units.degreesToRadians(-135)),
+            geometry.Rotation3d(0.0, degrees.of(-10).in_unit(radians), degrees.of(-135).in_unit(radians)),
         )
         rtc_mid = geometry.Transform3d(
             -0.241,
             0.0,
             0.229,
-            geometry.Rotation3d(0.0,units.degreesToRadians(-20),0.0)
+            geometry.Rotation3d(0.0, degrees.of(-20).in_unit(radians),0.0)
 
         )
 
@@ -88,7 +91,7 @@ class Odometry:
 
     BASELINE_STD = 0.1  # meters, tune by watching the pose jump on the dashboard
 
-    def get_target_distance(self) -> units.meters:
+    def get_target_distance(self) -> Distance:
         is_red = wpilib.DriverStation.getAlliance() == wpilib.DriverStation.Alliance.kRed
         tag_ids = RED_HUB_TAGS if is_red else BLUE_HUB_TAGS
         translations = []
@@ -98,7 +101,7 @@ class Odometry:
                 raise TypeError(f"tag {tag_id} not in field layout")
             translations.append(pose3d.translation().toTranslation2d())
         target_position = (translations[0] + translations[1]) / 2
-        return self.drive.get_pose().translation().distance(target_position)
+        return meters.of(self.drive.get_pose().translation().distance(target_position))
 
     def execute(self):
         for cam, estimator in self.camera_estimator_pairs:

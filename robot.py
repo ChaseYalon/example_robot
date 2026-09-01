@@ -11,7 +11,7 @@ from components.swerve import SwerveDrive
 from components.odometry import Odometry
 from components.auto import AutoContext, AutoRunner
 from smartunits import (
-    meters_per_second, radians_per_second,
+    meters_per_second, radians_per_second, volts,
     Velocity, AngularVelocity,
 )
 import math
@@ -36,14 +36,14 @@ class MyRobot(wpilib.TimedRobot):
         # <Intake>
         # rollers
         if self.secondary.getLeftTriggerAxis() >= 0.8:
-            self.intake.set_voltage(-10.0)
+            self.intake.set_voltage(volts.of(-10.0))
         elif self.secondary.getLeftBumper():
-            self.intake.set_voltage(10.0)
+            self.intake.set_voltage(volts.of(10.0))
         # hinge
         if self.secondary.getXButton():
-            self.intake.set_arm_voltage(12)
+            self.intake.set_arm_voltage(volts.of(12.0))
         elif self.secondary.getBButton():
-            self.intake.set_arm_voltage(-6)
+            self.intake.set_arm_voltage(volts.of(-6.0))
         # </Intake>
 
         # <Shooter>
@@ -55,9 +55,9 @@ class MyRobot(wpilib.TimedRobot):
         
         # <Swerve>
         self.swerve.drive(
-            self.primary.getLeftX() * self.MAX_LINEAR_VELOCITY.in_units(meters_per_second),
-            self.primary.getLeftY() * self.MAX_LINEAR_VELOCITY.in_units(meters_per_second),
-            self.primary.getRightX() * self.MAX_ANGULAR_VELOCITY.in_units(radians_per_second),
+            meters_per_second.of(self.primary.getLeftX() * self.MAX_LINEAR_VELOCITY.in_units(meters_per_second)),
+            meters_per_second.of(self.primary.getLeftY() * self.MAX_LINEAR_VELOCITY.in_units(meters_per_second)),
+            radians_per_second.of(self.primary.getRightX() * self.MAX_ANGULAR_VELOCITY.in_units(radians_per_second)),
             self.primary.getLeftStickButton() #idk if this is a good button
         )
         #</Swerve>

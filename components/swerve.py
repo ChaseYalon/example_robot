@@ -1,8 +1,12 @@
 import constants
 from phoenix6 import swerve, hardware
 from phoenix6.swerve import requests
-from wpimath import geometry, units
-
+from wpimath import geometry
+from smartunits import Velocity, AngularVelocity, Time, Distance
+from smartunits.velocity import meters_per_second
+from smartunits.angular_velocity import radians_per_second
+from smartunits.distance import meters
+from smartunits.time import seconds
 class SwerveDrive:
     drivetrain: swerve.SwerveDrivetrain
     period = 0.02
@@ -41,28 +45,28 @@ class SwerveDrive:
 
         self.pending_request = self.robot_centric_req.with_velocity_x(0.0).with_velocity_y(0.0).with_rotational_rate(0.0)
         
-    def drive(self, transX: units.meters_per_second, transY: units.meters_per_second, rotX: units.radians_per_second, field_relative: bool):
+    def drive(self, transX: Velocity, transY: Velocity, rotX: AngularVelocity, field_relative: bool):
         if field_relative:
             self.pending_request = (
                 self.field_centric_req
-                    .with_velocity_x(transX)
-                    .with_velocity_y(transY)
-                    .with_rotational_rate(rotX)
+                    .with_velocity_x(transX.in_unit(meters_per_second))
+                    .with_velocity_y(transY.in_unit(meters_per_second))
+                    .with_rotational_rate(rotX.in_unit(radians_per_second))
             )
         else:
             self.pending_request = (
                 self.robot_centric_req
-                    .with_velocity_x(transX)
-                    .with_velocity_y(transY)
-                    .with_rotational_rate(rotX)
+                    .with_velocity_x(transX.in_unit(meters_per_second))
+                    .with_velocity_y(transY.in_unit(meters_per_second))
+                    .with_rotational_rate(rotX.in_unit(radians_per_second))
             )
     def get_pose(self) -> geometry.Pose2d:
         return self.drivetrain.get_state().pose
     """pose, seconds_since_unix_epoch, (x, y, theta)"""
-    def add_pose_info(self, pose_info: geometry.Pose2d, time: units.seconds, stddevs: tuple[float, float, float]):
-        self.drivetrain.add_vision_measurement(pose_info, time, stddevs)
-    def get_distance_from_pose(self, pose: geometry.Pose2d) -> units.meters:
-        return pose.translation().distance(self.get_pose().translation())
+    def add_pose_info(self, pose_info: geometry.Pose2d, time: Time, stddevs: tuple[float, float, float]):
+        self.drivetrain.add_vision_measurement(pose_info, time.in_unit(seconds), stddevs)
+    def get_distance_from_pose(self, pose: geometry.Pose2d) -> Distance:
+        return meters.of(pose.translation().distance(self.get_pose().translation()))
 
     def execute(self):
         self.drivetrain.set_control(self.pending_request)

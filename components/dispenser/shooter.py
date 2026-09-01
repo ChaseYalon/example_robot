@@ -1,7 +1,7 @@
 from phoenix6 import hardware, configs, signals, controls
 from lemonlib import smart
-from wpimath import units
 import constants
+from smartunits import amps
 
 
 class Shooter:
@@ -43,14 +43,14 @@ class Shooter:
             .with_sensor_to_mechanism_ratio(1.0)
         )
 
-        config.current_limits.stator_current_limit = units.amperes(120)
+        config.current_limits.stator_current_limit = amps.of(120.0)
         config.current_limits.stator_current_limit_enable = True
 
-        config.current_limits.supply_current_limit = units.amperes(70)
+        config.current_limits.supply_current_limit = amps.of(70.0)
         config.current_limits.supply_current_limit_enable = True
 
-        config.torque_current.peak_forward_torque_current = units.amperes(140)
-        config.torque_current.peak_reverse_torque_current = -units.amperes(140)
+        config.torque_current.peak_forward_torque_current = amps.of(140.0)
+        config.torque_current.peak_reverse_torque_current = -amps.of(140.0)
 
         config.slot0 = slot0
         config.slot1 = slot1

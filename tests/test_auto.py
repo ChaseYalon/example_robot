@@ -4,9 +4,9 @@ from components.intake import Intake
 from components.dispenser import Controller
 from components.odometry import Odometry
 from lemonlib.util import AlertManager, AlertType
-from wpimath import units
 import json
 import os
+from smartunits import volts
 
 
 def test_auto_AutoRunner():
@@ -251,16 +251,16 @@ def test_auto_AutoRunner():
         AlertType.WARNING
     )
     r.contents = {"trajectory": {"samples": []}, "events": []}
-    ctx.it.set_voltage(units.volts(0))
+    ctx.it.set_voltage(volts.of(0))
     r.execute(ctx)
-    assert ctx.it.spin_voltage == units.volts(0)
+    assert ctx.it.spin_voltage == volts.of(0)
     r.contents = {
         "trajectory": {"samples": []},
         "events": [{"name": "IntakeOn", "from": {"targetTimestamp": 0.0}}],
     }
-    ctx.it.set_voltage(units.volts(0))
+    ctx.it.set_voltage(volts.of(0))
     r.execute(ctx)
-    assert ctx.it.spin_voltage == units.volts(12)
+    assert ctx.it.spin_voltage == volts.of(12)
     r.contents = {
         "trajectory": {"samples": []},
         "events": [
@@ -269,7 +269,7 @@ def test_auto_AutoRunner():
             {"name": "IntakeOn", "from": {"targetTimestamp": 0.0}},
         ],
     }
-    ctx.it.set_voltage(units.volts(0))
+    ctx.it.set_voltage(volts.of(0))
     r.execute(ctx)
-    assert ctx.it.spin_voltage == units.volts(12)
+    assert ctx.it.spin_voltage == volts.of(12)
     os.remove("temp.traj")

@@ -1,4 +1,3 @@
-from wpimath import units
 from components.swerve import SwerveDrive
 from components.dispenser import Controller
 from components.intake import Intake
@@ -6,6 +5,9 @@ from components.odometry import Odometry
 import json
 import time
 from lemonlib.util import AlertManager, AlertType
+from smartunits.velocity import meters_per_second
+from smartunits.angular_velocity import radians_per_second
+from smartunits.voltage import volts
 class AutoContext:
     sd: SwerveDrive
     it: Intake
@@ -22,8 +24,8 @@ class AutoContext:
         self.sc.execute()
         self.sd.execute()
 callbacks = {#the python type system wont allow type hints in lambdas, because it is bad.
-    "IntakeOn": lambda ctx: ctx.it.set_voltage(units.volts(12)),
-    "IntakeOff": lambda ctx: ctx.it.set_voltage(units.volts(0)),
+    "IntakeOn": lambda ctx: ctx.it.set_voltage(volts.of(12)),
+    "IntakeOff": lambda ctx: ctx.it.set_voltage(volts.of(0)),
     "Shoot": lambda ctx: ctx.sc.shoot(ctx.od.get_distance_from_target())
 }
 
@@ -52,14 +54,14 @@ class AutoRunner():
                 distFromFirstNeg = abs(dt - row["t"])
                 relativeDistPos = distFromLastPos / (distFromLastPos + distFromFirstNeg)
                 relativeDistNeg = distFromFirstNeg / (distFromLastPos + distFromFirstNeg)
-                vx += relativeDistNeg * samples[i - 1]["vx"]
+                vx  += relativeDistNeg * samples[i - 1]["vx"]
                 vy += relativeDistNeg * samples[i - 1]["vy"]
                 omega += relativeDistNeg * samples[i - 1]["omega"]
                 vx += relativeDistPos * row["vx"]
                 vy += relativeDistPos * row["vy"]
                 omega += relativeDistPos * row["omega"]
                 break
-        ctx.sd.drive(vx, vy, omega, True)
+        ctx.sd.drive(meters_per_second.of(vx), meters_per_second.of(vy), radians_per_second.of(omega), True)
         EVENT_TOLERANCE = 0.03 #30 ms
         for event in self.contents["events"]:
             if abs(event["from"]["targetTimestamp"] - dt) < EVENT_TOLERANCE:

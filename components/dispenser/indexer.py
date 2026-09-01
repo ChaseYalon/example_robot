@@ -1,13 +1,13 @@
 from phoenix6 import hardware, configs, signals, controls
-from wpimath import units
+from smartunits import amps
 
 
 class Indexer:
     left_kicker_motor = hardware.TalonFXS(4)
     right_kicker_motor = hardware.TalonFXS(5)
     conveyor_motor = hardware.TalonFXS(6)
-    kicker_amps = units.amperes(40)
-    conveyor_amps = units.amperes(20)
+    kicker_amps = amps.of(40.0)
+    conveyor_amps = amps.of(20.0)
 
     kick_on = False
     conv_on = False

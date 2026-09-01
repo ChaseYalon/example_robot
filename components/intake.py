@@ -1,8 +1,8 @@
 from phoenix6 import hardware, configs, signals, controls
 from lemonlib import control
 from lemonlib import smart  # , util
-from wpimath import units
 import enum
+from smartunits import Current, amps, volts
 
 import constants
 
@@ -17,14 +17,14 @@ class Intake:
     # unused - break_alert = util.Alert("intake arm may be breaking! Check for mechanical issues.", util.AlertType.ERROR)
     # unused - bypass_alert = util.Alert("Bypassing intake limits!", util.AlertType.WARNING)
 
-    spin_voltage: units.volts
-    arm_voltage: units.volts
+    spin_voltage: Current
+    arm_voltage: Current
 
     def __init__(self):
         # spin config
         spin_config = configs.TalonFXConfiguration()
         spin_config.motor_output.neutral_mode = signals.NeutralModeValue.BRAKE
-        spin_config.current_limits.supply_current_limit = units.amperes(60)
+        spin_config.current_limits.supply_current_limit = amps.of(60.0)
         spin_config.current_limits.supply_current_limit_enable = True
         self.spin_motor.configurator.apply(spin_config)
 
@@ -37,7 +37,7 @@ class Intake:
 
         # arm config
         arm_motor_config = configs.TalonFXSConfiguration()
-        arm_motor_config.current_limits.stator_current_limit = units.amperes(24)
+        arm_motor_config.current_limits.stator_current_limit = amps.of(60.0)
         arm_motor_config.commutation.motor_arrangement = (
             signals.MotorArrangementValue.BRUSHED_DC
         )
@@ -54,14 +54,14 @@ class Intake:
         )
         self.left_motor.set_control(self.arm_follower)
 
-    def set_voltage(self, voltage: units.volts):
+    def set_voltage(self, voltage: Current):
         self.spin_voltage = voltage
 
-    def set_arm_voltage(self, angle: units.volts):
+    def set_arm_voltage(self, angle: Current):
         self.arm_voltage = angle
 
     def execute(self):
-        self.spin_motor.set_control(controls.VoltageOut(self.spin_voltage))
+        self.spin_motor.set_control(controls.VoltageOut(self.spin_voltage.in_unit(volts)))
 
         if constants.TUNING_ENABLED and self.profile.gains != self._last_gains:
             self._last_gains = dict(self.profile.gains)
@@ -70,4 +70,4 @@ class Intake:
             self.right_motor.configurator.apply(self._arm_slot0)
 
         # left motor is following
-        self.right_motor.set_control(controls.VoltageOut(self.arm_voltage))
+        self.right_motor.set_control(controls.VoltageOut(self.arm_voltage.in_unit(volts)))

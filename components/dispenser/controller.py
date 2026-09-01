@@ -133,21 +133,21 @@ def calc_optimal_volts(horizontalDistance: float) -> float:
 # </Algorithms_etc>
 from .indexer import Indexer
 from .shooter import Shooter
-from wpimath import units
-
-
+from smartunits.voltage import volts
+from smartunits import Distance
+from smartunits.distance import meters
 class Controller:
     indexer: Indexer
     shooter: Shooter
     """How many volts it takes the shooter to spin 1 rpm faster, NEEDS TUNING"""
-    MAX_VOLTS = units.volts(12.0)
+    MAX_VOLTS = volts.of(12.0)
     should_shoot = False
-    distance_from_target: units.meters
+    distance_from_target: Distance
     def __init__(self):
         self.indexer = Indexer()
         self.shooter = Shooter()
 
-    def shoot(self, distance_from_target: units.meters):
+    def shoot(self, distance_from_target: Distance):
         self.should_shoot = True
         self.distance_from_target = distance_from_target
     def stop_shoot(self):
@@ -156,12 +156,12 @@ class Controller:
     def execute(self):
         if not self.should_shoot:
             self.shooter.set_velocity(
-                volts_to_velocity(0.8 * self.MAX_VOLTS)
+                volts_to_velocity(0.8 * self.MAX_VOLTS.in_unit(volts))
             )  # 0.8 is a made up number, tune
             self.indexer.conveyor_off()
             self.indexer.kicker_off()
         else:
-            self.shooter.set_velocity(calc_optimal_volts(self.distance_from_target))
+            self.shooter.set_velocity(calc_optimal_volts(self.distance_from_target.in_unit(meters)))
             self.indexer.kicker_on()
             self.indexer.conveyor_on()
 
