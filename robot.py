@@ -1,3 +1,8 @@
+import sys, os
+# vendored git submodules (each repo nests its package one level down)
+for _p in ("vendor/smartunits", "vendor/lemonlib"):
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__), _p))
+
 import wpilib
 from components.intake import Intake
 from lemonlib import control
@@ -7,7 +12,7 @@ from components.odometry import Odometry
 from components.auto import AutoContext, AutoRunner
 from smartunits import (
     meters_per_second, radians_per_second,
-    linear_velocity, angular_velocity,
+    Velocity, AngularVelocity,
 )
 import math
 class MyRobot(wpilib.TimedRobot):
@@ -17,8 +22,8 @@ class MyRobot(wpilib.TimedRobot):
     odometry: Odometry
     primary: control.LemonInput
     secondary: control.LemonInput
-    MAX_LINEAR_VELOCITY : linear_velocity = meters_per_second.of(3)
-    MAX_ANGULAR_VELOCITY : angular_velocity = radians_per_second.of(math.pi)
+    MAX_LINEAR_VELOCITY : Velocity = meters_per_second.of(3)
+    MAX_ANGULAR_VELOCITY : AngularVelocity = radians_per_second.of(math.pi)
     def robotInit(self):
         self.intake = Intake()
         self.shot_controller = Controller()

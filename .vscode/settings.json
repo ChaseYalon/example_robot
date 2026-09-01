@@ -1,11 +1,18 @@
 {
+    "python.defaultInterpreterPath": "${workspaceFolder}/venv/Scripts/python.exe",
+    "python.analysis.extraPaths": [
+        "vendor/smartunits",
+        "vendor/lemonlib"
+    ],
     "cSpell.words": [
         "apriltag",
         "choreo",
+        "datalag",
         "deadband",
         "INTAKING",
         "photonlibpy",
         "robotpy",
+        "smartunits",
         "traj"
     ]
 }
