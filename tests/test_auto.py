@@ -11,7 +11,8 @@ from smartunits import volts
 
 def test_auto_AutoRunner():
     with open("temp.traj", "w") as f:
-        f.write("""
+        f.write(
+            """
                 {
                 "name":"BlueLeftIntakeShoot",
                 "version":3,
@@ -225,7 +226,8 @@ def test_auto_AutoRunner():
                 {"name":"Shoot", "from":{"target":5, "targetTimestamp":3.77287, "offset":{"exp":"0 s", "val":0.0}}, "event":null}]
                 }
 
-            """)
+            """
+        )
     sd = SwerveDrive()
     ctx = AutoContext(sd, Intake(), Controller(), Odometry(sd))
     r = AutoRunner("temp.traj")
@@ -234,14 +236,16 @@ def test_auto_AutoRunner():
     assert r.first_iteration == False
 
     # runs once AND Try branch
-    r.contents = json.loads("""
+    r.contents = json.loads(
+        """
             {
                 "trajectory": {
                     "samples": {}
                 },
                 "events": {}
             }
-        """)
+        """
+    )
     r.execute(ctx)
 
     # runs zero times AND Except branch

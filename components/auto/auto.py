@@ -8,31 +8,41 @@ from lemonlib.util import AlertManager, AlertType
 from smartunits.velocity import meters_per_second
 from smartunits.angular_velocity import radians_per_second
 from smartunits.voltage import volts
+
+
 class AutoContext:
     sd: SwerveDrive
     it: Intake
     sc: Controller
     od: Odometry
+
     def __init__(self, sd: SwerveDrive, it: Intake, sc: Controller, od: Odometry):
         self.sd = sd
         self.it = it
         self.sc = sc
         self.od = od
+
     def execute(self):
         self.od.execute()
         self.it.execute()
         self.sc.execute()
         self.sd.execute()
-callbacks = {#the python type system wont allow type hints in lambdas, because it is bad.
-    "IntakeOn": lambda ctx: ctx.it.set_voltage(volts.of(12)),
-    "IntakeOff": lambda ctx: ctx.it.set_voltage(volts.of(0)),
-    "Shoot": lambda ctx: ctx.sc.shoot(ctx.od.get_distance_from_target())
-}
 
-class AutoRunner():
+
+callbacks = (
+    {  # the python type system wont allow type hints in lambdas, because it is bad.
+        "IntakeOn": lambda ctx: ctx.it.set_voltage(volts.of(12)),
+        "IntakeOff": lambda ctx: ctx.it.set_voltage(volts.of(0)),
+        "Shoot": lambda ctx: ctx.sc.shoot(ctx.od.get_distance_from_target()),
+    }
+)
+
+
+class AutoRunner:
     def __init__(self, file_path: str):
         self.file_path = file_path
         self.first_iteration = True
+
     def execute(self, ctx: AutoContext):
         if self.first_iteration:
             self.start_time_s = time.time_ns() / 1e9
@@ -46,23 +56,34 @@ class AutoRunner():
         try:
             samples = self.contents["trajectory"]["samples"]
         except:
-            AlertManager.instant_alert("Malformed Trajectory file, auto stopping", AlertType.WARNING)
+            AlertManager.instant_alert(
+                "Malformed Trajectory file, auto stopping", AlertType.WARNING
+            )
             return
-        for i, row in enumerate(samples): #if perf becomes an issue, binary search here would be an easy optimization
+        for i, row in enumerate(
+            samples
+        ):  # if perf becomes an issue, binary search here would be an easy optimization
             if dt - row["t"] < 0:
                 distFromLastPos = abs(dt - samples[i - 1]["t"])
                 distFromFirstNeg = abs(dt - row["t"])
                 relativeDistPos = distFromLastPos / (distFromLastPos + distFromFirstNeg)
-                relativeDistNeg = distFromFirstNeg / (distFromLastPos + distFromFirstNeg)
-                vx  += relativeDistNeg * samples[i - 1]["vx"]
+                relativeDistNeg = distFromFirstNeg / (
+                    distFromLastPos + distFromFirstNeg
+                )
+                vx += relativeDistNeg * samples[i - 1]["vx"]
                 vy += relativeDistNeg * samples[i - 1]["vy"]
                 omega += relativeDistNeg * samples[i - 1]["omega"]
                 vx += relativeDistPos * row["vx"]
                 vy += relativeDistPos * row["vy"]
                 omega += relativeDistPos * row["omega"]
                 break
-        ctx.sd.drive(meters_per_second.of(vx), meters_per_second.of(vy), radians_per_second.of(omega), True)
-        EVENT_TOLERANCE = 0.03 #30 ms
+        ctx.sd.drive(
+            meters_per_second.of(vx),
+            meters_per_second.of(vy),
+            radians_per_second.of(omega),
+            True,
+        )
+        EVENT_TOLERANCE = 0.03  # 30 ms
         for event in self.contents["events"]:
             if abs(event["from"]["targetTimestamp"] - dt) < EVENT_TOLERANCE:
                 callbacks[event["name"]](ctx)

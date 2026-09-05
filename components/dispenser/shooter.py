@@ -22,7 +22,7 @@ class Shooter:
                 "kV": 0.11137,
                 "kA": 0.0,  # 0.29663,
             },
-            constants.TUNING_ENABLED
+            constants.TUNING_ENABLED,
         )
         slot0 = self.shooter_profile.create_ctre_flywheel_controller()
         slot1 = (

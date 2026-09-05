@@ -32,6 +32,7 @@ SHOOTER_ANGLE = 90 - 23.0  # degrees, I assume it is 90-what it said in 2026
 
 VOLTAGE_TO_VELOCITY = 1.0  # temp number
 
+
 def horizontal_distance_over_time(
     initialVelocity: float, angle: float, time: float
 ) -> float:
@@ -136,6 +137,8 @@ from .shooter import Shooter
 from smartunits.voltage import volts
 from smartunits import Distance
 from smartunits.distance import meters
+
+
 class Controller:
     indexer: Indexer
     shooter: Shooter
@@ -143,6 +146,7 @@ class Controller:
     MAX_VOLTS = volts.of(12.0)
     should_shoot = False
     distance_from_target: Distance
+
     def __init__(self):
         self.indexer = Indexer()
         self.shooter = Shooter()
@@ -150,6 +154,7 @@ class Controller:
     def shoot(self, distance_from_target: Distance):
         self.should_shoot = True
         self.distance_from_target = distance_from_target
+
     def stop_shoot(self):
         self.should_shoot = False
 
@@ -161,7 +166,9 @@ class Controller:
             self.indexer.conveyor_off()
             self.indexer.kicker_off()
         else:
-            self.shooter.set_velocity(calc_optimal_volts(self.distance_from_target.in_unit(meters)))
+            self.shooter.set_velocity(
+                calc_optimal_volts(self.distance_from_target.in_unit(meters))
+            )
             self.indexer.kicker_on()
             self.indexer.conveyor_on()
 
