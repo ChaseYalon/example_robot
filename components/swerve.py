@@ -7,12 +7,15 @@ from smartunits.velocity import meters_per_second
 from smartunits.angular_velocity import radians_per_second
 from smartunits.distance import meters
 from smartunits.time import seconds
+
+
 class SwerveDrive:
     drivetrain: swerve.SwerveDrivetrain
     period = 0.02
     desired_pose = geometry.Pose2d()
     field_centric_req: requests.FieldCentric
     robot_centric_req: requests.RobotCentric
+
     def __init__(self):
         self.drivetrain = swerve.SwerveDrivetrain(
             hardware.TalonFX,
@@ -26,13 +29,13 @@ class SwerveDrive:
                 constants.TunerConstants.back_right,
             ],
         )
-        
+
         self.field_centric_req = (
             requests.FieldCentric()
-                .with_deadband(0.0)
-                .with_rotational_deadband(0.0)
-                .with_drive_request_type(swerve.SwerveModule.DriveRequestType.VELOCITY)
-                .with_steer_request_type(swerve.SwerveModule.SteerRequestType.POSITION)
+            .with_deadband(0.0)
+            .with_rotational_deadband(0.0)
+            .with_drive_request_type(swerve.SwerveModule.DriveRequestType.VELOCITY)
+            .with_steer_request_type(swerve.SwerveModule.SteerRequestType.POSITION)
         )
         self.robot_centric_req = (
             requests.RobotCentric()
@@ -43,28 +46,51 @@ class SwerveDrive:
         )
         self.drivetrain.seed_field_centric()
 
-        self.pending_request = self.robot_centric_req.with_velocity_x(0.0).with_velocity_y(0.0).with_rotational_rate(0.0)
-        
-    def drive(self, transX: Velocity, transY: Velocity, rotX: AngularVelocity, field_relative: bool):
+        self.pending_request = (
+            self.robot_centric_req.with_velocity_x(0.0)
+            .with_velocity_y(0.0)
+            .with_rotational_rate(0.0)
+        )
+
+    def drive(
+        self,
+        transX: Velocity,
+        transY: Velocity,
+        rotX: AngularVelocity,
+        field_relative: bool,
+    ):
         if field_relative:
             self.pending_request = (
-                self.field_centric_req
-                    .with_velocity_x(transX.in_unit(meters_per_second))
-                    .with_velocity_y(transY.in_unit(meters_per_second))
-                    .with_rotational_rate(rotX.in_unit(radians_per_second))
+                self.field_centric_req.with_velocity_x(
+                    transX.in_unit(meters_per_second)
+                )
+                .with_velocity_y(transY.in_unit(meters_per_second))
+                .with_rotational_rate(rotX.in_unit(radians_per_second))
             )
         else:
             self.pending_request = (
-                self.robot_centric_req
-                    .with_velocity_x(transX.in_unit(meters_per_second))
-                    .with_velocity_y(transY.in_unit(meters_per_second))
-                    .with_rotational_rate(rotX.in_unit(radians_per_second))
+                self.robot_centric_req.with_velocity_x(
+                    transX.in_unit(meters_per_second)
+                )
+                .with_velocity_y(transY.in_unit(meters_per_second))
+                .with_rotational_rate(rotX.in_unit(radians_per_second))
             )
+
     def get_pose(self) -> geometry.Pose2d:
         return self.drivetrain.get_state().pose
+
     """pose, seconds_since_unix_epoch, (x, y, theta)"""
-    def add_pose_info(self, pose_info: geometry.Pose2d, time: Time, stddevs: tuple[float, float, float]):
-        self.drivetrain.add_vision_measurement(pose_info, time.in_unit(seconds), stddevs)
+
+    def add_pose_info(
+        self,
+        pose_info: geometry.Pose2d,
+        time: Time,
+        stddevs: tuple[float, float, float],
+    ):
+        self.drivetrain.add_vision_measurement(
+            pose_info, time.in_unit(seconds), stddevs
+        )
+
     def get_distance_from_pose(self, pose: geometry.Pose2d) -> Distance:
         return meters.of(pose.translation().distance(self.get_pose().translation()))
 

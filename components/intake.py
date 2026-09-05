@@ -61,7 +61,9 @@ class Intake:
         self.arm_voltage = angle
 
     def execute(self):
-        self.spin_motor.set_control(controls.VoltageOut(self.spin_voltage.in_unit(volts)))
+        self.spin_motor.set_control(
+            controls.VoltageOut(self.spin_voltage.in_unit(volts))
+        )
 
         if constants.TUNING_ENABLED and self.profile.gains != self._last_gains:
             self._last_gains = dict(self.profile.gains)
@@ -70,4 +72,6 @@ class Intake:
             self.right_motor.configurator.apply(self._arm_slot0)
 
         # left motor is following
-        self.right_motor.set_control(controls.VoltageOut(self.arm_voltage.in_unit(volts)))
+        self.right_motor.set_control(
+            controls.VoltageOut(self.arm_voltage.in_unit(volts))
+        )
