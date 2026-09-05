@@ -81,7 +81,7 @@ class AutoRunner:
             meters_per_second.of(vx),
             meters_per_second.of(vy),
             radians_per_second.of(omega),
-            True,
+            field_relative = True,
         )
         EVENT_TOLERANCE = 0.03  # 30 ms
         for event in self.contents["events"]:

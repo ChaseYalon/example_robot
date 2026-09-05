@@ -29,10 +29,11 @@ Note: If there is a given execution path where it is impossible independently ex
 3. No code exists after an unconditional `return`, `raise`, `break`, or `continue` within the same block
 
 ### "There are no excessive comments" if...
-Note: This section does not apply to triple quoted (""") Doc Comments, see the rules regarding point 5 for those guidelines
+Note: This section does not apply to triple quoted (""") Doc Comments, see the rules regarding point 4 for those guidelines
 1. There is no case where, the information provided by a comment could instead be conveyed with a better variable/function name AND
 2. There are no comments to explain WHAT code does (if the code is not self evident, rewrite it) AND
 3. No comment addresses more than one "why" at a time — a comment explaining several unrelated reasons should be split into separate comments placed next to what they each explain
+4. DocComments should be used on every externally ablative function, specifying in clearly demarcated sections, "when to use this code" and "how to use this code"
 
 ### "The pre-agreed interface is implemented" if...
 1. The interface (including the name, parameters, with types and units, where units apply, and return type) was issued in writing (eg. email, issue, Google Doc) before implementation of the component began AND
@@ -50,14 +51,14 @@ Note: This is on top of black, not instead of black
 6. Nesting is not deeper than 4 levels, without a comment explaining why it is impossible to have less, AND
 7. Units belong in the type, not the name — eg. `time: nanoseconds` is correct, `time_ns: float` is not, since a type-based unit can be checked by Pyright and a name-based one cannot
 8. Any other PURELY FORMATTING/AESTHETIC condition set out by the software lead, that do not conduct any points in this doc, and announced publicly in either the Discord or the GitHub are followed.
-
+9. For any function parameter where it could be ambiguous what the parameter does should use the explicit 'param_name = value' notation, not just ordering. Example: self.sd.drive(x, y, rot, True) is not in compliance because while x, y, and rot are self evident, you cannot tell what True is doing. 'self.sd.drive(x, y, rot, field_relative = True)' is in compliance because the name makes it obvious.
 ## GitHub Guidelines
 1. All code should be done on a branch of the main repo, named with the programmer's initials and the component being worked on, all in caps, separated by an underscore. Example: if John Doe is working on the intake, the branch should be "JD_INTAKE". If two programmers' initials conflict, whoever joined the team first uses initials; anyone who joined later uses their first name and last initial instead. Example: if Jane Doe joined after John Doe and also needs the initials "JD", she should use "JANE-D_ROBOT" instead.
 2. When making a commit, it should be structured as [COMPONENT1_WORKED_ON, COMPONENT2_WORKED_ON...](issue-number_1, issue-number_2...) BRIEF_DESCRIPTION. If no issue is associated with the change, omit the parentheses entirely. Example: fixing issue 323, where the intake would not raise: "\[Intake\](323) Made it so intake would raise." Example with no associated issue: "[ShooterController, Odometry] Added Shoot-On-The-Move Solver."
 ## PR Review Procedures
 1. Every PR needs at least 2 reviewers (only 1 is required within 3 weeks of a competition). The first reviewer must have been to at least one competition. Anybody who has at least one commit may be the second reviewer. Nobody merges code directly into main without review — the only exception is if the software lead decides the situation is urgent enough, and this can only happen during a competition itself.
 2. To review a PR, you must not have written any of the code in it. The first two people to volunteer become the reviewers. If nobody volunteers, the software lead can assign reviewers instead.
-3. Code that isn't "correct" (see General Guidelines) can never be merged. No vote, discussion, or exception changes this — it's a hard rule.
+3. Code being deemed incorrect is grounds for its rejection.
 4. Even if code is "correct," reviewers can still reject it for other reasons (eg. it doesn't fit well with other code, it's the wrong time to add it, etc). If either reviewer says no, the PR does not merge — it doesn't need both reviewers to agree on the rejection.
 5. If someone thinks a rejected PR was rejected unfairly, they can appeal to the whole software team.
 6. When an appeal happens, anyone on the team can speak about the code. Then everyone votes "merge" or "no merge" — people not physically present can vote in the software Discord channel. Whichever option gets more votes wins, and a tie means no merge. This vote can turn a "no merge" into a "merge." 
