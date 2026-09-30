@@ -7,7 +7,7 @@ from smartunits import Current, amps, volts
 
 
 
-class Intake:
+class Intake: 
     spin_motor = hardware.TalonFX(51)
     left_motor = hardware.TalonFXS(52)
     right_motor = hardware.TalonFXS(53)
