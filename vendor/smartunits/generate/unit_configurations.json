@@ -1,0 +1,463 @@
+{
+  "AbsorbedDose": {
+    "base_unit": "Grays",
+    "multiply": {},
+    "divide": {}
+  },
+  "Acceleration": {
+    "base_unit": "unit()",
+    "generics": {
+      "D": {
+        "extends": "Unit"
+      }
+    },
+    "multiply": {},
+    "divide": {}
+  },
+  "Angle": {
+    "base_unit": "Radians",
+    "multiply": {
+      "Frequency": "AngularVelocity"
+    },
+    "divide": {
+      "Time": "AngularVelocity"
+    },
+    "per": {
+      "Time": "AngularVelocityUnit"
+    }
+  },
+  "AngularAcceleration": {
+    "base_unit": "RadiansPerSecondPerSecond",
+    "multiply": {
+      "Time": "AngularVelocity"
+    },
+    "divide": {
+      "Frequency": "AngularVelocity"
+    }
+  },
+  "AngularMomentum": {
+    "base_unit": "KilogramMetersSquaredPerSecond",
+    "multiply": {},
+    "divide": {
+      "AngularVelocity": "MomentOfInertia"
+    }
+  },
+  "AngularVelocity": {
+    "base_unit": "RadiansPerSecond",
+    "multiply": {
+      "Time": "Angle",
+      "Frequency": "AngularAcceleration"
+    },
+    "divide": {
+      "Time": "AngularAcceleration"
+    },
+    "extra": {
+      "code": "def as_frequency(self) -> \"Frequency\":\n      return Hertz.of_units(self.base_unit_magnitude())",
+      "types": [
+        "Frequency"
+      ]
+    }
+  },
+  "Area": {
+    "base_unit": "SquareMeters",
+    "multiply": {},
+    "divide": {}
+  },
+  "Capacitance": {
+    "base_unit": "Farads",
+    "multiply": {},
+    "divide": {}
+  },
+  "Charge": {
+    "base_unit": "Coulombs",
+    "multiply": {},
+    "divide": {}
+  },
+  "Compound": {
+    "base_unit": "unit()",
+    "multiply": {},
+    "divide": {}
+  },
+  "Concentration": {
+    "base_unit": "PartsPerMillion",
+    "multiply": {},
+    "divide": {}
+  },
+  "Conductance": {
+    "base_unit": "Siemens",
+    "multiply": {},
+    "divide": {}
+  },
+  "Current": {
+    "base_unit": "Amps",
+    "multiply": {
+      "Voltage": "Power",
+      "Resistance": "Voltage"
+    },
+    "divide": {},
+    "per": {
+      "Time": "VelocityUnit"
+    },
+    "multiply_methods": {
+      "Voltage": "PowerUnit"
+    }
+  },
+  "Data": {
+    "base_unit": "Exabytes",
+    "multiply": {},
+    "divide": {}
+  },
+  "DataTransfer": {
+    "base_unit": "ExabytesPerSecond",
+    "multiply": {},
+    "divide": {}
+  },
+  "Density": {
+    "base_unit": "KilogramsPerCubicMeter",
+    "multiply": {},
+    "divide": {}
+  },
+  "Dimensionless": {
+    "base_unit": "Value",
+    "multiply": {
+      "Angle": "Angle",
+      "AngularAcceleration": "AngularAcceleration",
+      "AngularMomentum": "AngularMomentum",
+      "AngularVelocity": "AngularVelocity",
+      "Current": "Current",
+      "Dimensionless": "Dimensionless",
+      "Distance": "Distance",
+      "Energy": "Energy",
+      "Force": "Force",
+      "Frequency": "Frequency",
+      "LinearAcceleration": "LinearAcceleration",
+      "LinearMomentum": "LinearMomentum",
+      "LinearVelocity": "LinearVelocity",
+      "Mass": "Mass",
+      "MomentOfInertia": "MomentOfInertia",
+      "Power": "Power",
+      "Resistance": "Resistance",
+      "Temperature": "Temperature",
+      "Time": "Time",
+      "Torque": "Torque",
+      "Voltage": "Voltage"
+    },
+    "divide": {
+      "Time": "Frequency"
+    }
+  },
+  "Distance": {
+    "base_unit": "Meters",
+    "multiply": {
+      "Frequency": "LinearVelocity",
+      "Force": "Torque"
+    },
+    "divide": {
+      "Time": "LinearVelocity",
+      "LinearVelocity": "Time"
+    },
+    "per": {
+      "Time": "LinearVelocityUnit"
+    }
+  },
+  "Energy": {
+    "base_unit": "Joules",
+    "multiply": {
+      "Frequency": "Power"
+    },
+    "divide": {
+      "Time": "Power"
+    },
+    "per": {
+      "Time": "PowerUnit"
+    }
+  },
+  "EquivalentDose": {
+    "base_unit": "Sieverts",
+    "multiply": {},
+    "divide": {}
+  },
+  "Force": {
+    "base_unit": "Newtons",
+    "multiply": {
+      "Distance": "Energy"
+    },
+    "divide": {
+      "Mass": "LinearAcceleration",
+      "LinearAcceleration": "Mass"
+    },
+    "per": {
+      "Mass": "LinearAccelerationUnit",
+      "LinearAcceleration": "MassUnit"
+    }
+  },
+  "Frequency": {
+    "base_unit": "Hertz",
+    "multiply": {
+      "Time": "Dimensionless",
+      "Distance": "LinearVelocity",
+      "LinearVelocity": "LinearAcceleration",
+      "Angle": "AngularVelocity",
+      "AngularVelocity": "AngularAcceleration"
+    },
+    "divide": {},
+    "per": {
+      "Time": "DimensionlessUnit",
+      "Distance": "LinearVelocityUnit",
+      "LinearVelocity": "LinearAccelerationUnit",
+      "Angle": "AngularVelocityUnit",
+      "AngularVelocity": "AngularAccelerationUnit"
+    },
+    "extra": {
+      "code": "def as_period(self) -> \"Time\":\n      return Seconds.of(1 / self.base_unit_magnitude());",
+      "types": [
+        "Time"
+      ]
+    }
+  },
+  "Illuminance": {
+    "base_unit": "Luxes",
+    "multiply": {},
+    "divide": {}
+  },
+  "Inductance": {
+    "base_unit": "Henries",
+    "multiply": {},
+    "divide": {}
+  },
+  "LinearAcceleration": {
+    "base_unit": "MetersPerSecondPerSecond",
+    "multiply": {
+      "Time": "LinearVelocity"
+    },
+    "divide": {
+      "Frequency": "LinearVelocity"
+    },
+    "per": {
+      "Time": "LinearVelocityUnit"
+    }
+  },
+  "LinearMomentum": {
+    "base_unit": "KilogramMetersPerSecond",
+    "multiply": {
+      "Frequency": "Force"
+    },
+    "divide": {
+      "Mass": "LinearVelocity",
+      "LinearVelocity": "Mass",
+      "Time": "Force"
+    },
+    "per": {
+      "Frequency": "ForceUnit",
+      "Mass": "LinearVelocityUnit",
+      "LinearVelocity": "MassUnit",
+      "Time": "ForceUnit"
+    }
+  },
+  "LinearVelocity": {
+    "base_unit": "MetersPerSecond",
+    "multiply": {
+      "Time": "Distance",
+      "Frequency": "LinearAcceleration"
+    },
+    "divide": {
+      "Time": "LinearAcceleration"
+    },
+    "per": {
+      "Time": "DistanceUnit",
+      "Frequency": "LinearAccelerationUnit"
+    }
+  },
+  "LuminousFlux": {
+    "base_unit": "Lumens",
+    "multiply": {},
+    "divide": {}
+  },
+  "LuminousIntensity": {
+    "base_unit": "Candelas",
+    "multiply": {},
+    "divide": {}
+  },
+  "MagneticFlux": {
+    "base_unit": "Webers",
+    "multiply": {},
+    "divide": {}
+  },
+  "MagneticStrength": {
+    "base_unit": "Teslas",
+    "multiply": {},
+    "divide": {}
+  },
+  "Mass": {
+    "base_unit": "Kilograms",
+    "multiply": {
+      "LinearAcceleration": "Force"
+    },
+    "divide": {},
+    "per": {
+      "LinearAcceleration": "ForceUnit"
+    }
+  },
+  "MomentOfInertia": {
+    "base_unit": "KilogramSquareMeters",
+    "multiply": {
+      "AngularVelocity": "AngularMomentum"
+    },
+    "divide": {},
+    "per": {
+      "AngularVelocity": "AngularMomentumUnit"
+    }
+  },
+  "Mult": {
+    "base_unit": "unit()",
+    "generics": {
+      "A": {
+        "extends": "Unit"
+      },
+      "B": {
+        "extends": "Unit"
+      }
+    },
+    "multiply": {},
+    "divide": {}
+  },
+  "Per": {
+    "base_unit": "unit()",
+    "generics": {
+      "Dividend": {
+        "extends": "Unit"
+      },
+      "Divisor": {
+        "extends": "Unit"
+      }
+    },
+    "multiply": {},
+    "divide": {},
+    "extra": {
+      "code": "def times_divisor(self, multiplier: Measure[Divisor]) ->  Measure[Dividend]: \n      return self._base_unit._numerator.of_base_units(self._base_unit_magnitude * multiplier._base_unit_magnitude);\n\ndef reciprocal(self) -> PerUnit[Divisor, Dividend]:\n      # May return a velocity if Divisor == TimeUnit, so we can't guarantee a \"Per\" instance\n      return self._base_unit.reciprocal().of_base_units(1 / self._base_unit_magnitude)\n",
+      "types": {}
+    }
+  },
+  "Power": {
+    "base_unit": "Watts",
+    "multiply": {
+      "Time": "Energy"
+    },
+    "divide": {
+      "Voltage": "Current",
+      "Current": "Voltage",
+      "Energy": "Frequency"
+    },
+    "per": {
+      "Voltage": "CurrentUnit",
+      "Current": "VoltageUnit",
+      "Energy": "FrequencyUnit"
+    }
+  },
+  "Pressure": {
+    "base_unit": "Pascals",
+    "multiply": {},
+    "divide": {}
+  },
+  "Radioactivity": {
+    "base_unit": "Becquerels",
+    "multiply": {},
+    "divide": {}
+  },
+  "Resistance": {
+    "base_unit": "Ohms",
+    "multiply": {
+      "Current": "Voltage"
+    },
+    "divide": {},
+    "per": {
+      "Current": "VoltageUnit"
+    }
+  },
+  "SolidAngle": {
+    "base_unit": "Steradians",
+    "multiply": {},
+    "divide": {}
+  },
+  "Substance": {
+    "base_unit": "Moles",
+    "multiply": {},
+    "divide": {}
+  },
+  "Temperature": {
+    "base_unit": "Kelvin",
+    "multiply": {},
+    "divide": {}
+  },
+  "Time": {
+    "base_unit": "Seconds",
+    "multiply": {
+      "Frequency": "Dimensionless",
+      "AngularVelocity": "Angle",
+      "AngularAcceleration": "AngularVelocity",
+      "LinearVelocity": "Distance",
+      "LinearAcceleration": "LinearVelocity"
+    },
+    "divide": {
+      "Time": "Dimensionless"
+    },
+    "per": {
+      "Time": "DimensionlessUnit"
+    },
+    "extra": {
+      "code": "def as_frequency(self) -> \"Frequency\":\n      return Hertz.of(1 / self.base_unit_magnitude())",
+      "types": [
+        "Frequency"
+      ]
+    }
+  },
+  "Torque": {
+    "base_unit": "NewtonMeters",
+    "multiply": {},
+    "divide": {
+      "Distance": "Force",
+      "Force": "Distance"
+    },
+    "per": {
+      "Distance": "ForceUnit",
+      "Force": "DistanceUnit"
+    }
+  },
+  "Velocity": {
+    "base_unit": "unit()",
+    "generics": {
+      "D": {
+        "extends": "Unit"
+      }
+    },
+    "multiply": {
+      "Time": {
+        "implementation": "                  \nreturn self._unit._numerator._of_base_units(self._base_unit_magnitude * other._base_unit_magnitude)\n                "
+      }
+    },
+    "divide": {}
+  },
+  "Voltage": {
+    "base_unit": "Volts",
+    "multiply": {
+      "Current": "Power"
+    },
+    "divide": {
+      "Resistance": "Current",
+      "Current": "Resistance"
+    },
+    "per": {
+      "Time": "VelocityUnit",
+      "Resistance": "CurrentUnit",
+      "Current": "ResistanceUnit"
+    },
+    "multiply_methods": {
+      "Current": "PowerUnit"
+    }
+  },
+  "Volume": {
+    "base_unit": "CubicMeters",
+    "multiply": {},
+    "divide": {}
+  }
+}
