@@ -1,11 +1,9 @@
-from phoenix6 import hardware, configs, signals, controls
+from phoenix6 import hardware, configs, signals, controls, CANBus
+from wpilib import CANPort
 from smartunits import amps
 
 
 class Indexer:
-    left_kicker_motor = hardware.TalonFXS(4)
-    right_kicker_motor = hardware.TalonFXS(5)
-    conveyor_motor = hardware.TalonFXS(6)
     kicker_amps = amps.of(40.0)
     conveyor_amps = amps.of(20.0)
 
@@ -13,6 +11,10 @@ class Indexer:
     conv_on = False
 
     def __init__(self):
+        self.indexer_canbus = CANBus(CANPort.CAN_S2)
+        self.left_kicker_motor = hardware.TalonFXS(4, self.indexer_canbus)
+        self.right_kicker_motor = hardware.TalonFXS(5, self.indexer_canbus)
+        self.conveyor_motor = hardware.TalonFXS(6, self.indexer_canbus)
         kicker_motor_configs = configs.TalonFXSConfiguration()
         kicker_motor_configs.motor_output.neutral_mode = signals.NeutralModeValue.BRAKE
         kicker_motor_configs.commutation.motor_arrangement = (

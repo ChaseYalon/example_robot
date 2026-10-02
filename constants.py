@@ -1,12 +1,12 @@
 from smartunits import (
-    inches, meters, amperes, kilogram_square_meters, volts, rotations,
-    meters_per_second, radians_per_second, linear_velocity, distance, moment_of_inertia, angle, voltage, current
+    Angle, Current, Distance, MomentOfInertia, Velocity, Voltage,
+    amperes, inches, kilogram_square_meters, meters, meters_per_second, rotations, volts,
 )
-from phoenix6 import CANBus, configs, signals, swerve, units
+from phoenix6 import CANBus, configs, signals, swerve
 
 TUNING_ENABLED = False
 """Photonliby not ready yet"""
-ODOMETRY = False
+ODOMETRY = True
 
 class TunerConstants:
     """
@@ -70,7 +70,7 @@ class TunerConstants:
 
     # The stator current at which the wheels start to slip;
     # This needs to be tuned to your individual robot
-    _slip_current: current = amperes.of(120.0)
+    _slip_current: Current = amperes.of(120.0)
 
     # Initial configs for the drive and steer motors and the azimuth encoder; these cannot be null.
     # Some configs will be overwritten; check the `with_*_initial_configs()` API documentation.
@@ -110,7 +110,7 @@ class TunerConstants:
 
     # Theoretical free speed (m/s) at 12 V applied output;
     # This needs to be tuned to your individual robot
-    speed_at_12_volts: linear_velocity = meters_per_second.of(4.58)
+    speed_at_12_volts: Velocity = meters_per_second.of(4.58)
 
     # Every 1 rotation of the azimuth results in _couple_ratio drive motor turns;
     # This may need to be tuned to your individual robot
@@ -118,7 +118,7 @@ class TunerConstants:
 
     _drive_gear_ratio = 6.746031746031747
     _steer_gear_ratio = 21.428571428571427
-    _wheel_radius: units.meter = inches_to_meters(2)
+    _wheel_radius: Distance = inches.of(2)
 
     _invert_left_side = False
     _invert_right_side = True
@@ -126,11 +126,11 @@ class TunerConstants:
     _pigeon_id = 30
 
     # These are only used for simulation
-    _steer_inertia: units.kilogram_square_meter = 0.01
-    _drive_inertia: units.kilogram_square_meter = 0.01
+    _steer_inertia: MomentOfInertia = kilogram_square_meters.of(0.01)
+    _drive_inertia: MomentOfInertia = kilogram_square_meters.of(0.01)
     # Simulated voltage necessary to overcome friction
-    _steer_friction_voltage: volts = volts.of(0.0)
-    _drive_friction_voltage: volts = volts.of(0.0)
+    _steer_friction_voltage: Voltage = volts.of(0.0)
+    _drive_friction_voltage: Voltage = volts.of(0.0)
 
     drivetrain_constants = (
         swerve.SwerveDrivetrainConstants()
@@ -148,76 +148,76 @@ class TunerConstants:
         .with_drive_motor_gear_ratio(_drive_gear_ratio)
         .with_steer_motor_gear_ratio(_steer_gear_ratio)
         .with_coupling_gear_ratio(_couple_ratio)
-        .with_wheel_radius(_wheel_radius)
+        .with_wheel_radius(_wheel_radius.in_unit(meters))
         .with_steer_motor_gains(_steer_gains)
         .with_drive_motor_gains(_drive_gains)
         .with_steer_motor_closed_loop_output(_steer_closed_loop_output)
         .with_drive_motor_closed_loop_output(_drive_closed_loop_output)
-        .with_slip_current(_slip_current)
-        .with_speed_at12_volts(speed_at_12_volts)
+        .with_slip_current(_slip_current.in_unit(amperes))
+        .with_speed_at12_volts(speed_at_12_volts.in_unit(meters_per_second))
         .with_drive_motor_type(_drive_motor_type)
         .with_steer_motor_type(_steer_motor_type)
         .with_feedback_source(_steer_feedback_type)
         .with_drive_motor_initial_configs(_drive_initial_configs)
         .with_steer_motor_initial_configs(_steer_initial_configs)
         .with_encoder_initial_configs(_encoder_initial_configs)
-        .with_steer_inertia(_steer_inertia)
-        .with_drive_inertia(_drive_inertia)
-        .with_steer_friction_voltage(_steer_friction_voltage)
-        .with_drive_friction_voltage(_drive_friction_voltage)
+        .with_steer_inertia(_steer_inertia.in_unit(kilogram_square_meters))
+        .with_drive_inertia(_drive_inertia.in_unit(kilogram_square_meters))
+        .with_steer_friction_voltage(_steer_friction_voltage.in_unit(volts))
+        .with_drive_friction_voltage(_drive_friction_voltage.in_unit(volts))
     )
 
     # Front Left
     _front_left_drive_motor_id = 41
     _front_left_steer_motor_id = 42
     _front_left_encoder_id = 43
-    _front_left_encoder_offset: units.rotation = -0.333984375
+    _front_left_encoder_offset: Angle = rotations.of(-0.333984375)
     _front_left_steer_motor_inverted = True
     _front_left_encoder_inverted = False
 
-    _front_left_x_pos: units.meter = inches_to_meters(11)
-    _front_left_y_pos: units.meter = inches_to_meters(11)
+    _front_left_x_pos: Distance = inches.of(11)
+    _front_left_y_pos: Distance = inches.of(11)
 
     # Front Right
     _front_right_drive_motor_id = 11
     _front_right_steer_motor_id = 12
     _front_right_encoder_id = 13
-    _front_right_encoder_offset: units.rotation = -0.2451171875
+    _front_right_encoder_offset: Angle = rotations.of(-0.2451171875)
     _front_right_steer_motor_inverted = True
     _front_right_encoder_inverted = False
 
-    _front_right_x_pos: units.meter = inches_to_meters(11)
-    _front_right_y_pos: units.meter = inches_to_meters(-11)
+    _front_right_x_pos: Distance = inches.of(11)
+    _front_right_y_pos: Distance = inches.of(-11)
 
     # Back Left
     _back_left_drive_motor_id = 31
     _back_left_steer_motor_id = 32
     _back_left_encoder_id = 33
-    _back_left_encoder_offset: units.rotation = 0.326904296875
+    _back_left_encoder_offset: Angle = rotations.of(0.326904296875)
     _back_left_steer_motor_inverted = True
     _back_left_encoder_inverted = False
 
-    _back_left_x_pos: units.meter = inches_to_meters(-11)
-    _back_left_y_pos: units.meter = inches_to_meters(11)
+    _back_left_x_pos: Distance = inches.of(-11)
+    _back_left_y_pos: Distance = inches.of(11)
 
     # Back Right
     _back_right_drive_motor_id = 21
     _back_right_steer_motor_id = 22
     _back_right_encoder_id = 23
-    _back_right_encoder_offset: units.rotation = -0.350341796875
+    _back_right_encoder_offset: Angle = rotations.of(-0.350341796875)
     _back_right_steer_motor_inverted = True
     _back_right_encoder_inverted = False
 
-    _back_right_x_pos: units.meter = inches_to_meters(-11)
-    _back_right_y_pos: units.meter = inches_to_meters(-11)
+    _back_right_x_pos: Distance = inches.of(-11)
+    _back_right_y_pos: Distance = inches.of(-11)
 
     front_left = _constants_creator.create_module_constants(
         _front_left_steer_motor_id,
         _front_left_drive_motor_id,
         _front_left_encoder_id,
-        _front_left_encoder_offset,
-        _front_left_x_pos,
-        _front_left_y_pos,
+        _front_left_encoder_offset.in_unit(rotations),
+        _front_left_x_pos.in_unit(meters),
+        _front_left_y_pos.in_unit(meters),
         _invert_left_side,
         _front_left_steer_motor_inverted,
         _front_left_encoder_inverted,
@@ -226,9 +226,9 @@ class TunerConstants:
         _front_right_steer_motor_id,
         _front_right_drive_motor_id,
         _front_right_encoder_id,
-        _front_right_encoder_offset,
-        _front_right_x_pos,
-        _front_right_y_pos,
+        _front_right_encoder_offset.in_unit(rotations),
+        _front_right_x_pos.in_unit(meters),
+        _front_right_y_pos.in_unit(meters),
         _invert_right_side,
         _front_right_steer_motor_inverted,
         _front_right_encoder_inverted,
@@ -237,9 +237,9 @@ class TunerConstants:
         _back_left_steer_motor_id,
         _back_left_drive_motor_id,
         _back_left_encoder_id,
-        _back_left_encoder_offset,
-        _back_left_x_pos,
-        _back_left_y_pos,
+        _back_left_encoder_offset.in_unit(rotations),
+        _back_left_x_pos.in_unit(meters),
+        _back_left_y_pos.in_unit(meters),
         _invert_left_side,
         _back_left_steer_motor_inverted,
         _back_left_encoder_inverted,
@@ -248,9 +248,9 @@ class TunerConstants:
         _back_right_steer_motor_id,
         _back_right_drive_motor_id,
         _back_right_encoder_id,
-        _back_right_encoder_offset,
-        _back_right_x_pos,
-        _back_right_y_pos,
+        _back_right_encoder_offset.in_unit(rotations),
+        _back_right_x_pos.in_unit(meters),
+        _back_right_y_pos.in_unit(meters),
         _invert_right_side,
         _back_right_steer_motor_inverted,
         _back_right_encoder_inverted,

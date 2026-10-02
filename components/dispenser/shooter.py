@@ -1,17 +1,19 @@
-from phoenix6 import hardware, configs, signals, controls
+from phoenix6 import hardware, configs, signals, controls, CANBus
 from lemonlib import smart
 import constants
 from smartunits import amps
+from wpilib import CANPort
 
 
 class Shooter:
-    left_motor = hardware.TalonFX(2)
-    right_motor = hardware.TalonFX(3)
     shooter_profile: smart.SmartProfile
     base_config: configs.TalonFXConfiguration
     velocity: float  # should be a better unit
 
     def __init__(self):
+        self.shooter_canbus = CANBus(CANPort.CAN_S0)
+        self.left_motor = hardware.TalonFX(2, self.shooter_canbus)
+        self.right_motor = hardware.TalonFX(3, self.shooter_canbus)
         self.shooter_profile = smart.SmartProfile(
             "shooter",
             {
