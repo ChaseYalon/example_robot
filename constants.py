@@ -70,7 +70,7 @@ class TunerConstants:
 
     # The stator current at which the wheels start to slip;
     # This needs to be tuned to your individual robot
-    _slip_current: units.ampere = 120.0
+    _slip_current: current = amperes.of(120.0)
 
     # Initial configs for the drive and steer motors and the azimuth encoder; these cannot be null.
     # Some configs will be overwritten; check the `with_*_initial_configs()` API documentation.
@@ -110,7 +110,7 @@ class TunerConstants:
 
     # Theoretical free speed (m/s) at 12 V applied output;
     # This needs to be tuned to your individual robot
-    speed_at_12_volts: units.meters_per_second = 4.58
+    speed_at_12_volts: linear_velocity = meters_per_second.of(4.58)
 
     # Every 1 rotation of the azimuth results in _couple_ratio drive motor turns;
     # This may need to be tuned to your individual robot
@@ -129,8 +129,8 @@ class TunerConstants:
     _steer_inertia: units.kilogram_square_meter = 0.01
     _drive_inertia: units.kilogram_square_meter = 0.01
     # Simulated voltage necessary to overcome friction
-    _steer_friction_voltage: units.volt = 0.0
-    _drive_friction_voltage: units.volt = 0.0
+    _steer_friction_voltage: volts = volts.of(0.0)
+    _drive_friction_voltage: volts = volts.of(0.0)
 
     drivetrain_constants = (
         swerve.SwerveDrivetrainConstants()
