@@ -1,13 +1,17 @@
 [tool.robotpy]
 
-robotpy_version = "2027.0.0a6.post1"
+robotpy_version = "2027.0.0a7"
 
 components = [
     "all",
 ]
 
 requires = [
-    "phoenix6==26.50.0a1",
-    "robotpy-rev==2027.0.0a5.post1",
-    "robotpy-fields",
+    "phoenix6==26.70.0a2",
+    "robotpy-fields==2027.0.0a7",
+    "photonlibpy @ git+https://github.com/PhotonVision/photonvision.git@main#subdirectory=photon-lib/py",
+    "smartunits @ git+https://github.com/Mythilllian/SmartUnits.git@main",
+    "lemonlib @ git+https://github.com/FRC5113/LemonLib.git@main",
+    "robotpy-wpilib-utilities @ git+https://github.com/robotpy/robotpy-wpilib-utilities",
+
 ]

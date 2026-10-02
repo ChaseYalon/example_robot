@@ -1,6 +1,0 @@
-[submodule "vendor/lemonlib"]
-	path = vendor/lemonlib
-	url = https://github.com/frc5113/lemonlib.git
-[submodule "vendor/smartunits"]
-	path = vendor/smartunits
-	url = https://github.com/Mythilllian/SmartUnits.git
