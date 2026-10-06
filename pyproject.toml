@@ -1,13 +1,13 @@
 [tool.robotpy]
 
-robotpy_version = "2027.0.0a6.post1"
+robotpy_version = "2027.0.0a7"
 
 components = [
     "all",
 ]
 
 requires = [
-    "phoenix6==26.50.0a1",
-    "robotpy-rev==2027.0.0a5.post1",
-    "robotpy-fields",
+    "phoenix6==26.70.0a2",
+    "lemonlib @ git+https://github.com/FRC5113/LemonLib.git",
+    "smartunits @ git+https://github.com/Mythilllian/SmartUnits.git"
 ]
