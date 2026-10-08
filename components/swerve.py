@@ -1,16 +1,16 @@
 import constants
 from phoenix6 import swerve, hardware
 from phoenix6.swerve import requests
-from wpimath import geometry
 from smartunits import Velocity, AngularVelocity, Time, Distance
 from smartunits.velocity import meters_per_second
 from smartunits.angular_velocity import radians_per_second
 from smartunits.distance import meters
 from smartunits.time import seconds
+import wpimath
 class SwerveDrive:
     drivetrain: swerve.SwerveDrivetrain
     period = 0.02
-    desired_pose = geometry.Pose2d()
+    desired_pose = wpimath.Pose2d()
     field_centric_req: requests.FieldCentric
     robot_centric_req: requests.RobotCentric
     def __init__(self):
@@ -60,12 +60,12 @@ class SwerveDrive:
                     .with_velocity_y(transY.in_unit(meters_per_second))
                     .with_rotational_rate(rotX.in_unit(radians_per_second))
             )
-    def get_pose(self) -> geometry.Pose2d:
+    def get_pose(self) -> wpimath.Pose2d:
         return self.drivetrain.get_state().pose
     """pose, seconds_since_unix_epoch, (x, y, theta)"""
-    def add_pose_info(self, pose_info: geometry.Pose2d, time: Time, stddevs: tuple[float, float, float]):
+    def add_pose_info(self, pose_info: wpimath.Pose2d, time: Time, stddevs: tuple[float, float, float]):
         self.drivetrain.add_vision_measurement(pose_info, time.in_unit(seconds), stddevs)
-    def get_distance_from_pose(self, pose: geometry.Pose2d) -> Distance:
+    def get_distance_from_pose(self, pose: wpimath.Pose2d) -> Distance:
         return meters.of(pose.translation().distance(self.get_pose().translation()))
 
     def execute(self):

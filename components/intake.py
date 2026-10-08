@@ -1,16 +1,14 @@
-from phoenix6 import hardware, configs, signals, controls
+from phoenix6 import hardware, configs, signals, controls, CANBus
 import constants
 #gifrom lemonlib import control
 from lemonlib import smart  # , util
 import enum
 from smartunits import Current, amps, volts
+from wpilib import CANPort
 
 
 
 class Intake: 
-    spin_motor = hardware.TalonFX(51)
-    left_motor = hardware.TalonFXS(52)
-    right_motor = hardware.TalonFXS(53)
 
     # unused - hinge_alert = util.Alert("intake hinge has rotated too far!", util.AlertType.WARNING)
     # unused - break_alert = util.Alert("intake arm may be breaking! Check for mechanical issues.", util.AlertType.ERROR)
@@ -20,6 +18,10 @@ class Intake:
     arm_voltage: Current
 
     def __init__(self):
+        self.intake_canbus = CANBus(CANPort.CAN_S2)
+        self.spin_motor = hardware.TalonFX(51, self.intake_canbus)
+        self.left_motor = hardware.TalonFXS(52, self.intake_canbus)
+        self.right_motor = hardware.TalonFXS(53, self.intake_canbus)
         # spin config
         spin_config = configs.TalonFXConfiguration()
         spin_config.motor_output.neutral_mode = signals.NeutralModeValue.BRAKE
