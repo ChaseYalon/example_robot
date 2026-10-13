@@ -7,3 +7,4 @@ ctre_sim
 
 .python-version
 *.egg-info
+wheels

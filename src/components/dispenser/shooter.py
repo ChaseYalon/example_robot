@@ -1,6 +1,6 @@
 from phoenix6 import hardware, configs, signals, controls, CANBus
 from lemonlib import smart
-import constants
+import constants as constants
 from smartunits import amps
 from wpilib import CANPort
 

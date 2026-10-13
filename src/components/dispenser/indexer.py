@@ -12,8 +12,9 @@ class Indexer:
 
     def __init__(self):
         self.indexer_canbus = CANBus(CANPort.CAN_S2)
-        self.left_kicker_motor = hardware.TalonFXS(4, self.indexer_canbus)
-        self.right_kicker_motor = hardware.TalonFXS(5, self.indexer_canbus)
+        self.shooter_canbus = CANBus(CANPort.CAN_S0)
+        self.left_kicker_motor = hardware.TalonFXS(4, self.shooter_canbus)
+        self.right_kicker_motor = hardware.TalonFXS(5, self.shooter_canbus)
         self.conveyor_motor = hardware.TalonFXS(6, self.indexer_canbus)
         kicker_motor_configs = configs.TalonFXSConfiguration()
         kicker_motor_configs.motor_output.neutral_mode = signals.NeutralModeValue.BRAKE

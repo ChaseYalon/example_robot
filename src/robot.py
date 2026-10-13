@@ -1,8 +1,7 @@
-import sys, os
 import wpilib
-import constants
+import constants as constants
 from components.intake import Intake
-from lemonlib import control
+from lemonlib import LemonInput
 from components.dispenser import Controller
 from components.swerve import SwerveDrive
 if constants.ODOMETRY:
@@ -18,17 +17,22 @@ class MyRobot(wpilib.TimedRobot):
     shot_controller: Controller
     swerve: SwerveDrive
     odometry: Odometry
-    primary: control.LemonInput
-    secondary: control.LemonInput
+
     MAX_LINEAR_VELOCITY : Velocity = meters_per_second.of(3)
     MAX_ANGULAR_VELOCITY : AngularVelocity = radians_per_second.of(math.pi)
-    def robotInit(self):
+    def __init__(self):
+        super().__init__()
+
         self.intake = Intake()
         self.shot_controller = Controller()
         self.swerve = SwerveDrive()
         self.odometry = Odometry(self.swerve)
+
+    def teleop_init(self):
+        self.primary = LemonInput(0)  # Gotta create on telop init so we know that driver station is
+        self.secondary = LemonInput(1)  # connected to robot and to get most up to date info
         
-    def teleopPeriodic(self):
+    def teleop_periodic(self):
         self.odometry.execute() #prevent datalag
 
         # <Intake>
@@ -68,8 +72,8 @@ class MyRobot(wpilib.TimedRobot):
         # </Execute>
 
     def teleopInit(self):
-        self.primary = control.LemonInput(0)
-        self.secondary = control.LemonInput(1)
+        self.primary = LemonInput(0)
+        self.secondary = LemonInput(1)
     def autonomousInit(self):
         self.ctx = AutoContext(self.swerve, self.intake, self.shot_controller, self.odometry)
         self.routine1 = AutoRunner("./choreo/BlueLeftIntakeShoot.traj")

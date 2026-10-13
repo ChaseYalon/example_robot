@@ -1,4 +1,4 @@
-import constants
+import constants as constants
 if constants.ODOMETRY:
     from lemonlib import vision
     from photonlibpy import PhotonPoseEstimator

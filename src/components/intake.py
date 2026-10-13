@@ -1,5 +1,5 @@
 from phoenix6 import hardware, configs, signals, controls, CANBus
-import constants
+import constants as constants
 #gifrom lemonlib import control
 from lemonlib import smart  # , util
 import enum
@@ -18,7 +18,7 @@ class Intake:
     arm_voltage: Current
 
     def __init__(self):
-        self.intake_canbus = CANBus(CANPort.CAN_S2)
+        self.intake_canbus = CANBus(CANPort.CAN_S1)
         self.spin_motor = hardware.TalonFX(51, self.intake_canbus)
         self.left_motor = hardware.TalonFXS(52, self.intake_canbus)
         self.right_motor = hardware.TalonFXS(53, self.intake_canbus)
