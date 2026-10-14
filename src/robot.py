@@ -12,6 +12,7 @@ from smartunits import (
     Velocity, AngularVelocity,
 )
 import math
+from lemonlib.util import curve
 class MyRobot(wpilib.TimedRobot):
     intake: Intake
     shot_controller: Controller
@@ -56,11 +57,18 @@ class MyRobot(wpilib.TimedRobot):
         # </Shooter>
         
         # <Swerve>
+        self.curve = curve(
+            lambda x: 1.89 * x**3 + 0.61*x,
+            0.0,
+            deadband = 0.1,
+            max_mag = 1.0
+        )
+
         self.swerve.drive(
-            meters_per_second.of(self.primary.getLeftX() * self.MAX_LINEAR_VELOCITY.in_units(meters_per_second)),
-            meters_per_second.of(self.primary.getLeftY() * self.MAX_LINEAR_VELOCITY.in_units(meters_per_second)),
-            radians_per_second.of(self.primary.getRightX() * self.MAX_ANGULAR_VELOCITY.in_units(radians_per_second)),
-            self.primary.getLeftStickButton() #idk if this is a good button
+            self.curve(self.primary.getLeftY()) * self.MAX_LINEAR_VELOCITY.in_unit(meters_per_second),
+            self.curve(self.primary.getLeftX()) * self.MAX_LINEAR_VELOCITY.in_unit(meters_per_second),
+            self.curve(self.primary.getRIghtX()) * self.MAX_LINEAR_VELOCITY.in_unit(meters_per_second),
+            field_relative = True
         )
         #</Swerve>
         
