@@ -30,7 +30,7 @@ EXIT_VELOCITY = 10.0  # m/s
 MAX_ALLOWABLE_ITERATIONS = 1000  # max allowable iterations to prevent infinite loops
 SHOOTER_ANGLE = 90 - 23.0  # degrees, I assume it is 90-what it said in 2026
 
-VOLTAGE_TO_VELOCITY = 1.0  # temp number
+VOLTAGE_TO_VELOCITY = 5  # temp number
 
 def horizontal_distance_over_time(
     initialVelocity: float, angle: float, time: float

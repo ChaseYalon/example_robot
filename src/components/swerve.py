@@ -49,9 +49,9 @@ class SwerveDrive:
         if field_relative:
             self.pending_request = (
                 self.field_centric_req
-                    .with_velocity_x(transX.in_unit(meters_per_second))
-                    .with_velocity_y(transY.in_unit(meters_per_second))
-                    .with_rotational_rate(rotX.in_unit(radians_per_second))
+                    .with_velocity_x(transX)
+                    .with_velocity_y(transY)
+                    .with_rotational_rate(rotX)
             )
         else:
             self.pending_request = (

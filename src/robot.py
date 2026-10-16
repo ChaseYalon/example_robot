@@ -12,27 +12,27 @@ from smartunits import (
     Velocity, AngularVelocity,
 )
 import math
-from lemonlib.util import curve
+from lemonlib.util import curve, AlertManager, AlertType
 class MyRobot(wpilib.TimedRobot):
     intake: Intake
     shot_controller: Controller
     swerve: SwerveDrive
     odometry: Odometry
 
-    MAX_LINEAR_VELOCITY : Velocity = meters_per_second.of(3)
-    MAX_ANGULAR_VELOCITY : AngularVelocity = radians_per_second.of(math.pi)
     def __init__(self):
         super().__init__()
+        self.MAX_LINEAR_VELOCITY : Velocity = meters_per_second.of(3)
+        self.MAX_ANGULAR_VELOCITY : AngularVelocity = radians_per_second.of(math.pi)
 
         self.intake = Intake()
         self.shot_controller = Controller()
         self.swerve = SwerveDrive()
         self.odometry = Odometry(self.swerve)
-
+        self.DEADBAND = 0.1 #arbitrary
     def teleop_init(self):
         self.primary = LemonInput(0)  # Gotta create on telop init so we know that driver station is
         self.secondary = LemonInput(1)  # connected to robot and to get most up to date info
-        
+
     def teleop_periodic(self):
         self.odometry.execute() #prevent datalag
 
@@ -42,11 +42,14 @@ class MyRobot(wpilib.TimedRobot):
             self.intake.set_voltage(volts.of(-10.0))
         elif self.secondary.getLeftBumper():
             self.intake.set_voltage(volts.of(10.0))
+        else:
+            self.intake.set_voltage(volts.of(0.0))
         # hinge
         if self.secondary.getXButton():
-            self.intake.set_arm_voltage(volts.of(12.0))
+            
+            self.intake.set_arm_voltage(volts.of(-10.0))
         elif self.secondary.getBButton():
-            self.intake.set_arm_voltage(volts.of(-6.0))
+            self.intake.set_arm_voltage(volts.of(6.0))
         # </Intake>
 
         # <Shooter>
@@ -58,24 +61,44 @@ class MyRobot(wpilib.TimedRobot):
         
         # <Swerve>
         self.curve = curve(
-            lambda x: 1.89 * x**3 + 0.61*x,
+            lambda x: 1.89 * x**3 + 0.61 * x,
             0.0,
-            deadband = 0.1,
-            max_mag = 1.0
+            deadband=0.1,
+            max_mag=1.0
         )
 
+        # Scale dimensionless joystick inputs by the maximum speeds.
+        vx = meters_per_second.of(
+            self.curve(self.primary.getLeftY())
+            * self.MAX_LINEAR_VELOCITY.into(meters_per_second)
+        ).into(meters_per_second)
+
+        vy = meters_per_second.of(
+            self.curve(self.primary.getLeftX())
+            * self.MAX_LINEAR_VELOCITY.into(meters_per_second)
+        ).into(meters_per_second)
+
+        omega = radians_per_second.of(
+            self.curve(self.primary.getRightX())
+            * self.MAX_ANGULAR_VELOCITY.into(radians_per_second)
+        ).into(radians_per_second)
+
         self.swerve.drive(
-            self.curve(self.primary.getLeftY()) * self.MAX_LINEAR_VELOCITY.in_unit(meters_per_second),
-            self.curve(self.primary.getLeftX()) * self.MAX_LINEAR_VELOCITY.in_unit(meters_per_second),
-            self.curve(self.primary.getRIghtX()) * self.MAX_LINEAR_VELOCITY.in_unit(meters_per_second),
-            field_relative = True
+            vx,
+            vy,
+            omega,
+            field_relative=True
         )
+
         #</Swerve>
         
         # <Execute>
         #odometry moved to top
         self.intake.execute()
-        self.shot_controller.execute()
+        try:
+            self.shot_controller.execute()
+        except RuntimeError:
+            AlertManager.instant_alert("Shot physicaly impossible with given parameters", AlertType.ERROR)
         self.swerve.execute()
         # </Execute>
 

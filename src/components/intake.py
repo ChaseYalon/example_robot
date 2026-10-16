@@ -29,25 +29,19 @@ class Intake:
         spin_config.current_limits.supply_current_limit_enable = True
         self.spin_motor.configurator.apply(spin_config)
 
-        # arm pid gains
-        self.profile = smart.SmartProfile(
-            "intake_arm",
-            {"kP": 10.0, "kI": 0.0, "kD": 0.0},
-            constants.TUNING_ENABLED,
-        )
 
         # arm config
         arm_motor_config = configs.TalonFXSConfiguration()
-        arm_motor_config.current_limits.stator_current_limit = amps.of(60.0)
+        arm_motor_config.current_limits.stator_current_limit = amps.of(40.0)
+        arm_motor_config.current_limits.stator_current_limit_enable = True
+        arm_motor_config.motor_output.neutral_mode = signals.NeutralModeValue.BRAKE
         arm_motor_config.commutation.motor_arrangement = (
             signals.MotorArrangementValue.BRUSHED_DC
         )
-        arm_motor_config.slot0 = self.profile.create_ctre_pid_controller()
         self.left_motor.configurator.apply(arm_motor_config)
         self.right_motor.configurator.apply(arm_motor_config)
 
         self._arm_slot0 = arm_motor_config.slot0
-        self._last_gains = dict(self.profile.gains)
 
         # left follows right
         self.arm_follower = controls.Follower(
@@ -66,11 +60,6 @@ class Intake:
             self.spin_motor.set_control(controls.VoltageOut(self.spin_voltage.in_unit(volts)))
         except:
             pass
-        if constants.TUNING_ENABLED and self.profile.gains != self._last_gains:
-            self._last_gains = dict(self.profile.gains)
-            self._arm_slot0 = self.profile.create_ctre_pid_controller()
-            self.left_motor.configurator.apply(self._arm_slot0)
-            self.right_motor.configurator.apply(self._arm_slot0)
         try:
             # left motor is following
             self.right_motor.set_control(controls.VoltageOut(self.arm_voltage.in_unit(volts)))
