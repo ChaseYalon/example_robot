@@ -7,6 +7,7 @@ from smartunits.angular_velocity import radians_per_second
 from smartunits.distance import meters
 from smartunits.time import seconds
 import wpimath
+import math
 class SwerveDrive:
     drivetrain: swerve.SwerveDrivetrain
     period = 0.02
@@ -67,6 +68,8 @@ class SwerveDrive:
         self.drivetrain.add_vision_measurement(pose_info, time.in_unit(seconds), stddevs)
     def get_distance_from_pose(self, pose: wpimath.Pose2d) -> Distance:
         return meters.of(pose.translation().distance(self.get_pose().translation()))
+    def reset_heading(self) -> None:
+        self.drivetrain.seed_field_centric(wpimath.Rotation2d(math.pi))
 
     def execute(self):
         self.drivetrain.set_control(self.pending_request)

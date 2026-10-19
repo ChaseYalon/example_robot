@@ -13,6 +13,7 @@ from smartunits import (
 )
 import math
 from lemonlib.util import curve, AlertManager, AlertType
+from pathlib import Path
 class MyRobot(wpilib.TimedRobot):
     intake: Intake
     shot_controller: Controller
@@ -78,7 +79,7 @@ class MyRobot(wpilib.TimedRobot):
             * self.MAX_LINEAR_VELOCITY.into(meters_per_second)
         ).into(meters_per_second)
 
-        omega = radians_per_second.of(
+        omega = -radians_per_second.of(
             self.curve(self.primary.getRightX())
             * self.MAX_ANGULAR_VELOCITY.into(radians_per_second)
         ).into(radians_per_second)
@@ -89,6 +90,8 @@ class MyRobot(wpilib.TimedRobot):
             omega,
             field_relative=True
         )
+        if self.primary.getSquareButton():
+            self.swerve.reset_heading()
 
         #</Swerve>
         
@@ -105,9 +108,14 @@ class MyRobot(wpilib.TimedRobot):
     def teleopInit(self):
         self.primary = LemonInput(0)
         self.secondary = LemonInput(1)
-    def autonomousInit(self):
+    def autonomous_init(self):
         self.ctx = AutoContext(self.swerve, self.intake, self.shot_controller, self.odometry)
-        self.routine1 = AutoRunner("./choreo/BlueLeftIntakeShoot.traj")
-    def autonomousPeriodic(self):
+        try:
+            self.routine1 = AutoRunner("./py/deploy/choreo/BlueLeftIntakeShoot.traj")
+        except:
+            AlertManager.instant_alert("file not found", AlertType.ERROR)
+    def autonomous_periodic(self):
+        files = [item.name for item in Path("./py/deploy/").iterdir()]
+        AlertManager.instant_alert(f"hey we are running auto {files}", AlertType.INFO, timeout=60)
         self.routine1.execute(self.ctx)
         self.ctx.execute()
